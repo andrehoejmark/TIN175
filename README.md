@@ -1,14 +1,24 @@
 # TIN175
 Predicting temperature of city with weather data from nearby cities
 
-<p>
-<u><b> Members </b> </u>
-  
-<table style="width:100%">
-  <tr> Members </tr>
-  <tr> Rasmus </tr>
-  <tr> Felix </tr>
-  <tr> Edin </tr>
-  <tr> Jithinraj Sreekumar </tr> 
-  <tr> André </tr>
-</p>
+
+<table class="tg">
+  <tr>
+    <th class="tg-0lax"><span style="font-weight:bold">Members</span></th>
+  </tr>
+  <tr>
+    <td class="tg-0lax">Rasmus</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">Felix</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">Edin</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">Jithinraj Sreekumar</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">André</td>
+  </tr>
+</table>

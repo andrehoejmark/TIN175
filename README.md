@@ -7,7 +7,7 @@ Predicting temperature of city with weather data from nearby cities
     <th class="tg-0lax"><span style="font-weight:bold">Members</span></th>
   </tr>
   <tr>
-    <td class="tg-0lax">Rasmus</td>
+    <td class="tg-0lax">Rasmus Claesen</td>
   </tr>
   <tr>
     <td class="tg-0lax">Felix</td>
@@ -19,6 +19,6 @@ Predicting temperature of city with weather data from nearby cities
     <td class="tg-0lax">Jithinraj Sreekumar</td>
   </tr>
   <tr>
-    <td class="tg-0lax">André</td>
+    <td class="tg-0lax">André Höjmark</td>
   </tr>
 </table>

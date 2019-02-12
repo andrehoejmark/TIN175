@@ -18,6 +18,7 @@ Barkåkra (south of gothenburg)<br>
 Active since: 1946-01-01 to Present<br>
 station nr: 62180<br><br><br>
 
+![overview](https://user-images.githubusercontent.com/24205488/52640301-7ad26a80-2ed6-11e9-85f6-d7cc9c7a93cd.png)
 
 EXTRA INFO<br>
 weather.xlsx should incelude all the files in the maps.<br><br>

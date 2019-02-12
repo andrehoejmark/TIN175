@@ -3,7 +3,7 @@ Predicting temperature of city with weather data from nearby cities
 
 
 
-<H4> Plan </H4>
+<H3> Plan </H3>
 1. Choose dataset <br>
 2. Visualize dataset <br>
 3. Clean the dataset <br>
@@ -12,7 +12,7 @@ Predicting temperature of city with weather data from nearby cities
 6. add and remove variables <br>
 7. add and remove layers and neurons <br>
 
-
+<br><br><br><br><br><br>
 
 
 <table class="tg">

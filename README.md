@@ -4,13 +4,13 @@ Predicting temperature of city with weather data from nearby cities
 
 
 <H4> Plan </H4>
-1. Choose dataset
-2. Visualize dataset
-3. Clean the dataset
-4. Add recurrent network from keras to model
-5. discuss the results
-6. add and remove variables
-7. add and remove layers and neurons
+1. Choose dataset <br>
+2. Visualize dataset <br>
+3. Clean the dataset <br>
+4. Add recurrent network from keras to model <br>
+5. discuss the results <br>
+6. add and remove variables <br>
+7. add and remove layers and neurons <br>
 
 
 

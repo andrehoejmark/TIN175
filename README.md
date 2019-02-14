@@ -14,6 +14,14 @@ Predicting temperature of city with weather data from nearby cities
 
 To contribute you need to discuss the topic or be part of some development.
 
+<br><br><br><br><br><br>
+Things to be tested <br>
+1. Find variables that are important with regression<br>
+2. Try adding cities further away<br>
+3. Add and remove variables and layers/neurons ex: adding raining, snowing, sunny<br>
+4. Try at different training time. Do we need data from 40 years back or 20years back.<br>
+5. Try ltsm , gated recurrent network<br>
+
 
 
 <br><br><br><br><br><br>

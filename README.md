@@ -9,8 +9,7 @@ Predicting temperature of city with weather data from nearby cities
 3. Preprocess the dataset (Felix) <br>
 4. Add recurrent network from keras to model (Edin) <br>
 5. discuss the results <br>
-6. add and remove variables <br>
-7. add and remove layers and neurons <br><br>
+6. Search for hyperparameters<br><br>
 
 8. Strucute of essay(Edin)
 To contribute you need to discuss the topic or be part of some development.
@@ -19,9 +18,10 @@ To contribute you need to discuss the topic or be part of some development.
 Things to be tested <br>
 1. Find variables that are important with regression<br>
 2. Try adding cities further away<br>
-3. Add and remove variables and layers/neurons ex: adding raining, snowing, sunny<br>
-4. Try at different training time. Do we need data from 40 years back or 20years back.<br>
-5. Try ltsm , gated recurrent network<br>
+3. Using different inputs i.e. <temp, windspeed, winddir> , <temp, percipitation, humidity, winddir>
+   to predict <temp, windspeed, winddir> , <temp, percipitation><br>
+4. Try at different training time. Do we need data from 40 years back or 20years back<br>
+5. Compare LSTM and GRU network performance<br>
 
 
 

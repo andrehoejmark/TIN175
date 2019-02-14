@@ -4,8 +4,8 @@ Predicting temperature of city with weather data from nearby cities
 
 
 <H3> Plan and Contributors</H3>
-1. Choose dataset (Rasmus, André)<br>
-2. Visualize dataset <br>
+1. Choose dataset finding important variablels (Rasmus, André)<br>
+2. Visualize dataset (André)<br>
 3. Preprocess the dataset (Felix) <br>
 4. Add recurrent network from keras to model <br>
 5. discuss the results <br>

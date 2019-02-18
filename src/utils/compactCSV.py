@@ -7,10 +7,15 @@ A script to generate a merged dataset CSV file from separate SMHI data CSV files
 import os
 import sys
 import csv
+import argparse
 from datetime import datetime
 
 TIMESTAMP_FORMAT_STRING = "%Y-%m-%d %H:%M:%S"
+TIMESTAMP_PAST = "0000-00-00 00:00:00"
 TIMESTAMP_FUTURE = "9999-12-31 23:59:59"
+
+MIN_TIME = TIMESTAMP_PAST
+MAX_TIME = TIMESTAMP_FUTURE
 
 def readCSV(name, wid = 3, max_len = 500000):
   result = []
@@ -45,7 +50,16 @@ def mergeCSV(results):
   output = []
   indices = []
   for set in results:
-    indices.append(0)
+    i = 0
+    l = len(set)
+    while i < l:
+      row = set[i]
+      timestamp = getRowTimestamp(row)
+      if timestamp < MIN_TIME:
+        i = i + 1
+      else:
+        break
+    indices.append(i)
   future_timestamp = datetime.strptime(TIMESTAMP_FUTURE, TIMESTAMP_FORMAT_STRING)
   row_date = ""
   row_time = ""
@@ -59,7 +73,8 @@ def mergeCSV(results):
       if index < len(set):
         row = set[index]
         timestamp = getRowTimestamp(row)
-        if timestamp < old_timestamp:
+        if (timestamp < MAX_TIME
+          and timestamp < old_timestamp):
           row_date = row[0]
           row_time = row[1]
           old_timestamp = timestamp
@@ -94,48 +109,49 @@ def parseCity(name, folder, columns, max_len):
   return mergeCSV(results)
 
 def parseArguments(args):
+  global MIN_TIME
+  global MAX_TIME
   input_city = None
   output_path = "merged.csv"
   input_folder = "."
   length = len(args)
-  input_columns = []
   input_max_len = 500000
-  if length >= 1:
-    input_city = args[0]
-    for arg in args[1:]:
-      if arg[0:7] == "folder=":
-        input_folder = arg[7:]
-      elif arg[0:7] == "output=":
-        output_path = arg[7:]
-      elif arg[0:4] == "max=":
-        try:
-          input_max_len = int(arg[4:])
-        except:
-          print("Parameter to 'max=' is not an integer.")
-          return
-      else:
-        input_columns.append(arg)
+  parser = argparse.ArgumentParser(description = "A CSV file merging script.")
+  parser.add_argument('city', metavar = 'city' , type = str)
+  parser.add_argument('columns', metavar = 'column' , type = str, nargs = '+')
+  parser.add_argument('--max', dest = 'max_rows', help = 'set the maximum number of input rows read from the CSV files.', action = 'append', type = int)
+  parser.add_argument('--folder', dest = 'folder', help = 'specify a folder path for input CSV files.', action = 'append', type = str)
+  parser.add_argument('--output', dest = 'output', help = 'specify an output CSV file.', action = 'append', type = str)
+  parser.add_argument('--start', dest = 'start', help = 'set a starting timestamp in Y-m-d format.', action = 'append', type = str)
+  parser.add_argument('--stop', dest = 'stop', help = 'set a ending timestamp in Y-m-d format.', action = 'append', type = str)
+  args = parser.parse_args()
+  if args.start:
+    MIN_TIME = args.start[-1]
+  if args.stop:
+    MAX_TIME = args.stop[-1]
+  try:
+    MIN_TIME = datetime.strptime(MIN_TIME, "%Y-%m-%d")
+  except:
+    print("Malformed start date.")
+    return
+  try:
+    MAX_TIME = datetime.strptime(MAX_TIME, "%Y-%m-%d")
+  except:
+    print("Malformed stop date.")
+    return
+  if len(args.columns) >= 1:
+    input_city = args.city
+    if args.output and len(args.output) > 0:
+      output_path = args.output[-1]
+    if args.folder and len(args.folder) > 0:
+      input_folder = args.folder[-1]
+    
     if os.path.isfile(output_path):
-      print("The file \"%s\" already exists, please remove it or change the output name (using the option \"output=...\")." % output_path)
+      print("The file \"%s\" already exists, please remove it or change the output name (using the option \"--output\")." % output_path)
     else:
-      output = parseCity(input_city, input_folder, input_columns, input_max_len)
+      output = parseCity(args.city, input_folder, args.columns, input_max_len)
       writeCSV(output_path, output)
   else:
-    print("""
-Expected the first argument to be a name for weather data in a city.
----
-USAGE: city-name [OPTIONS] [COLUMNS]
----
-OPTIONS:
-folder=... : CSV resource folder path
-output=... : output CSV file
-max=... : max read input table length
----
-You will need to provide the CSV data files named as \"{column-name}_{city-name}.csv\" and
-place them in the folder specified by the \"folder=...\" option (the default is \"folder=.\"
-, the current directory). The output CSV file can be specified using the \"output=...\"
-option, the default is \"output=merged.csv\". When using the \"max=...\" only the number of
-specified rows will be read from each input file (default is \"max=500'000\").
-""")
+    print("Missing columns")
 
 parseArguments(sys.argv[1:])

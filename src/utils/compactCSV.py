@@ -14,8 +14,8 @@ TIMESTAMP_FORMAT_STRING = "%Y-%m-%d %H:%M:%S"
 TIMESTAMP_PAST = "0000-00-00 00:00:00"
 TIMESTAMP_FUTURE = "9999-12-31 23:59:59"
 
-MIN_TIME = TIMESTAMP_PAST
-MAX_TIME = TIMESTAMP_FUTURE
+MIN_TIME = "0001-01-01"
+MAX_TIME = "9999-12-31"
 
 def readCSV(name, wid = 3, max_len = 500000):
   result = []
@@ -30,14 +30,17 @@ def readCSV(name, wid = 3, max_len = 500000):
             break
         elif(len(row) > 0 and row[0] == "Datum"):
           valid_lines = True
-  except FileNotFoundError:
+  except:
     print("Unable to find the file %s." % name)
   return result
 
-def writeCSV(name, rows):
+def writeCSV(name, rows, columns):
   with open(name, mode = 'w') as file:
     writer = csv.writer(file, delimiter = ';', quotechar='"', quoting = csv.QUOTE_MINIMAL)
-    writer.writerow(["Datum", "Tid (UTC)"])
+    header_row = ["Datum", "Tid (UTC)"]
+    for column in columns:
+      header_row.append(column)
+    writer.writerow(header_row)
     for row in rows:
       writer.writerow(row)
 
@@ -98,27 +101,28 @@ def mergeCSV(results):
       break # No more data available.
   return output
 
-def parseCity(name, folder, columns, max_len):
+def parseCities(city_names, folder, columns, max_len):
   path = folder + "/"
-  print("Processing city: %s from \"%s\" with the columns %s" % (name, path, str(columns)))
   results = []
-  for column in columns:
-    partial = readCSV(path + column + "_" + name + ".csv", max_len = max_len)
-    print("Loaded column %s with %d rows." % (column, len(partial)))
-    results.append(partial)
+  for name in city_names:
+    print("Processing city: %s from \"%s\" with the columns %s" % (name, path, str(columns)))
+    for column in columns:
+      partial = readCSV(path + column + "_" + name + ".csv", max_len = max_len)
+      print("Loaded column %s with %d rows." % (column, len(partial)))
+      results.append(partial)
   return mergeCSV(results)
 
 def parseArguments(args):
   global MIN_TIME
   global MAX_TIME
-  input_city = None
+  input_city = []
   output_path = "merged.csv"
   input_folder = "."
   length = len(args)
   input_max_len = 500000
   parser = argparse.ArgumentParser(description = "A CSV file merging script.")
-  parser.add_argument('city', metavar = 'city' , type = str)
   parser.add_argument('columns', metavar = 'column' , type = str, nargs = '+')
+  parser.add_argument('--city', dest = 'cities', help = 'add an additional city for which to search for weather data.', action = 'append', type = str)
   parser.add_argument('--max', dest = 'max_rows', help = 'set the maximum number of input rows read from the CSV files.', action = 'append', type = int)
   parser.add_argument('--folder', dest = 'folder', help = 'specify a folder path for input CSV files.', action = 'append', type = str)
   parser.add_argument('--output', dest = 'output', help = 'specify an output CSV file.', action = 'append', type = str)
@@ -139,19 +143,23 @@ def parseArguments(args):
   except:
     print("Malformed stop date.")
     return
-  if len(args.columns) >= 1:
-    input_city = args.city
+  if len(args.cities) == 0:
+    print("Needs at least one specified city.")
+  elif len(args.columns) >= 1:
     if args.output and len(args.output) > 0:
       output_path = args.output[-1]
     if args.folder and len(args.folder) > 0:
       input_folder = args.folder[-1]
-    
     if os.path.isfile(output_path):
       print("The file \"%s\" already exists, please remove it or change the output name (using the option \"--output\")." % output_path)
     else:
-      output = parseCity(args.city, input_folder, args.columns, input_max_len)
-      writeCSV(output_path, output)
+      output = parseCities(args.cities, input_folder, args.columns, input_max_len)
+      header_columns = []
+      for city in args.cities:
+        for column in args.columns:
+          header_columns.append(city + " " + column)
+      writeCSV(output_path, output, header_columns)
   else:
-    print("Missing columns")
+    print("Missing columns.")
 
 parseArguments(sys.argv[1:])

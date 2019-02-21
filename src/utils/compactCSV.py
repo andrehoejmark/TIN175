@@ -18,17 +18,23 @@ TIMESTAMP_FUTURE = "9999-12-31 23:59:59"
 MIN_TIME = "0001-01-01"
 MAX_TIME = "9999-12-31"
 
-def readCSV(name, wid = 3, max_len = 500000):
+def readCSV(name, wid = 3, max_len = 500000, is_multi = False):
   result = []
   try:
     with open(name) as file:
       reader = csv.reader(file, delimiter = ';', quotechar='"')
       valid_lines = False
+      count = 0
       for row in reader:
         if valid_lines:
-          result.append(row[0:wid])
-          if(len(result) >= max_len):
+          part = row[0:wid]
+          if is_multi:
+            part.append(row[wid + 1])
+          result.append(part)
+          if(count >= max_len):
             break
+          else:
+            count = count + 1
         elif(len(row) > 0 and row[0] == "Datum"):
           valid_lines = True
   except:
@@ -53,6 +59,7 @@ def mergeCSV(results):
   # first two columns to hold those two values.
   output = []
   indices = []
+  print("Seeking to start timestamp...")
   for set in results:
     i = 0
     l = len(set)
@@ -67,7 +74,19 @@ def mergeCSV(results):
   future_timestamp = datetime.strptime(TIMESTAMP_FUTURE, TIMESTAMP_FORMAT_STRING)
   row_date = ""
   row_time = ""
+  iteration = 0
+  print("Merging data rows...")
   while(True):
+    iteration = iteration + 1
+    if iteration > 50000:
+      iteration = 0
+      parsed = 0
+      total = 0
+      for i in range(0, len(results)):
+        index = indices[i]
+        parsed = parsed + index
+        total = total + len(results[i])
+      print("Progress: %f%% done." % ((float(parsed) / float(total)) * 100.0) )
     old_timestamp = future_timestamp
     has_more = False
     # Find earliest time on stack.
@@ -94,15 +113,18 @@ def mergeCSV(results):
           row = set[index]
           if row[0] == row_date and row[1] == row_time:
             indices[i] = index + 1
-            new_row.append(row[2])
+            for e in row[2:]:
+              new_row.append(e)
           else:
-            new_row.append("-")
+            for e in row[2:]:
+              new_row.append("-")
       output.append(new_row)
     else:
       break # No more data available.
+  print("END!")
   return output
 
-def parseCities(city_names, folders, columns, max_len):
+def parseCities(city_names, folders, columns, max_len, multi):
   results = []
   for name in city_names:
     for column in columns:
@@ -112,7 +134,7 @@ def parseCities(city_names, folders, columns, max_len):
         print("Looking for: %s" % file_name)
         if os.path.isfile(file_name):
           print("Processing city: %s from \"%s\" with the columns %s" % (name, file_name, str(columns)))
-          partial = readCSV(file_name, max_len = max_len)
+          partial = readCSV(file_name, max_len = max_len, is_multi = column in multi)
           results.append(partial)
           print("Loaded column %s with %d rows." % (column, len(partial)))
           found_file = True
@@ -138,6 +160,7 @@ def parseArguments(args):
   parser.add_argument('--output', dest = 'output', help = 'specify an output CSV file.', action = 'append', type = str)
   parser.add_argument('--start', dest = 'start', help = 'set a starting timestamp in Y-m-d format.', action = 'append', type = str)
   parser.add_argument('--stop', dest = 'stop', help = 'set a ending timestamp in Y-m-d format.', action = 'append', type = str)
+  parser.add_argument('--multi', dest = 'multi', help = 'name of a column which when read will read two two data columns instead of one.', action = 'append', type = str)
   args = parser.parse_args()
   if args.start:
     MIN_TIME = args.start[-1]
@@ -160,14 +183,18 @@ def parseArguments(args):
       output_path = args.output[-1]
     if not args.folder:
       args.folder = ["."]
+    if not args.multi:
+      args.multi = []
     if os.path.isfile(output_path):
       print("The file \"%s\" already exists, please remove it or change the output name (using the option \"--output\")." % output_path)
     else:
-      output = parseCities(args.cities, args.folder, args.columns, input_max_len)
+      output = parseCities(args.cities, args.folder, args.columns, input_max_len, args.multi)
       header_columns = []
       for city in args.cities:
         for column in args.columns:
           header_columns.append(city + " " + column)
+          if column in args.multi:
+            header_columns.append(city + " " + column + " #2")
       writeCSV(output_path, output, header_columns)
   else:
     print("Missing columns.")

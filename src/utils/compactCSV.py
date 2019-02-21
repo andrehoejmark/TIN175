@@ -29,7 +29,11 @@ def readCSV(name, wid = 3, max_len = 500000, is_multi = False):
         if valid_lines:
           part = row[0:wid]
           if is_multi:
-            part.append(row[wid + 1])
+            if len(row) < 5:
+              print("Missing value (will default to 0.0) on row (%s) in file: %s" % (row, name))
+              part.append("0.0")
+            else:
+              part.append(row[wid + 1])
           result.append(part)
           if(count >= max_len):
             break
@@ -37,8 +41,9 @@ def readCSV(name, wid = 3, max_len = 500000, is_multi = False):
             count = count + 1
         elif(len(row) > 0 and row[0] == "Datum"):
           valid_lines = True
-  except:
-    print("Unable to find the file %s." % name)
+  except Exception as e:
+    print("Threw exception:" % e)
+    sys.exit(1)
   return result
 
 def writeCSV(name, rows, columns):
@@ -60,9 +65,12 @@ def mergeCSV(results):
   output = []
   indices = []
   print("Seeking to start timestamp...")
+  columns_width = 2
   for set in results:
     i = 0
     l = len(set)
+    columns_width = columns_width + len(set[0]) - 2
+    # TODO: Optimize using binary search.
     while i < l:
       row = set[i]
       timestamp = getRowTimestamp(row)
@@ -104,20 +112,25 @@ def mergeCSV(results):
           has_more = True
     # Collect relevant values and add to a merged row.
     if has_more:
-      # print(old_timestamp)
       new_row = [row_date, row_time]
       for i in range(0, len(results)):
         index = indices[i]
         set = results[i]
+        hit = False
         if index < len(set):
           row = set[index]
           if row[0] == row_date and row[1] == row_time:
             indices[i] = index + 1
+            hit = True
             for e in row[2:]:
               new_row.append(e)
-          else:
-            for e in row[2:]:
-              new_row.append("-")
+        if not hit:
+          for e in row[2:]:
+            new_row.append("-")
+      if len(new_row) != columns_width:
+        print("Column witdth exception! Got %d expected %d" % (len(new_row), columns_width))
+        print(new_row)
+        return output
       output.append(new_row)
     else:
       break # No more data available.
@@ -170,12 +183,12 @@ def parseArguments(args):
     MIN_TIME = datetime.strptime(MIN_TIME, "%Y-%m-%d")
   except:
     print("Malformed start date.")
-    return
+    sys.exit(1)
   try:
     MAX_TIME = datetime.strptime(MAX_TIME, "%Y-%m-%d")
   except:
     print("Malformed stop date.")
-    return
+    sys.exit(1)
   if len(args.cities) == 0:
     print("Needs at least one specified city.")
   elif len(args.columns) >= 1:

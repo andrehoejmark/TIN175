@@ -5,6 +5,7 @@ A script to generate a merged dataset CSV file from separate SMHI data CSV files
 """
 
 import os
+import os.path
 import sys
 import csv
 import argparse
@@ -101,14 +102,23 @@ def mergeCSV(results):
       break # No more data available.
   return output
 
-def parseCities(city_names, folder, columns, max_len):
-  path = folder + "/"
+def parseCities(city_names, folders, columns, max_len):
+  paths = map(lambda x : x + "/", folders)
   results = []
   for name in city_names:
-    print("Processing city: %s from \"%s\" with the columns %s" % (name, path, str(columns)))
     for column in columns:
-      partial = readCSV(path + column + "_" + name + ".csv", max_len = max_len)
-      print("Loaded column %s with %d rows." % (column, len(partial)))
+      file_names = map(lambda path : path + column + "_" + name + ".csv", paths)
+      found_file = False
+      for file_name in file_names:
+        if os.path.isfile(file_name):
+          print("Processing city: %s from \"%s\" with the columns %s" % (name, file_name, str(columns)))
+          partial = readCSV(file_name, max_len = max_len)
+          print("Loaded column %s with %d rows." % (column, len(partial)))
+          found_file = True
+          break
+      if not found_file:
+        print("Unable to find the file (make sure you have addded the folder to the paths list): %s" % name)
+        break
       results.append(partial)
   return mergeCSV(results)
 
@@ -117,7 +127,6 @@ def parseArguments(args):
   global MAX_TIME
   input_city = []
   output_path = "merged.csv"
-  input_folder = "."
   length = len(args)
   input_max_len = 500000
   parser = argparse.ArgumentParser(description = "A CSV file merging script.")
@@ -148,12 +157,12 @@ def parseArguments(args):
   elif len(args.columns) >= 1:
     if args.output and len(args.output) > 0:
       output_path = args.output[-1]
-    if args.folder and len(args.folder) > 0:
-      input_folder = args.folder[-1]
+    if not args.folder:
+      args.folder = ["."]
     if os.path.isfile(output_path):
       print("The file \"%s\" already exists, please remove it or change the output name (using the option \"--output\")." % output_path)
     else:
-      output = parseCities(args.cities, input_folder, args.columns, input_max_len)
+      output = parseCities(args.cities, args.folder, args.columns, input_max_len)
       header_columns = []
       for city in args.cities:
         for column in args.columns:

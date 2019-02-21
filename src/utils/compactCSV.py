@@ -103,23 +103,24 @@ def mergeCSV(results):
   return output
 
 def parseCities(city_names, folders, columns, max_len):
-  paths = map(lambda x : x + "/", folders)
   results = []
   for name in city_names:
     for column in columns:
-      file_names = map(lambda path : path + column + "_" + name + ".csv", paths)
       found_file = False
-      for file_name in file_names:
+      for folder in folders:
+        file_name = folder + "/" + column + "_" + name + ".csv"
+        print("Looking for: %s" % file_name)
         if os.path.isfile(file_name):
           print("Processing city: %s from \"%s\" with the columns %s" % (name, file_name, str(columns)))
           partial = readCSV(file_name, max_len = max_len)
+          results.append(partial)
           print("Loaded column %s with %d rows." % (column, len(partial)))
           found_file = True
           break
+        else:
+          print("Unable to find file: %s" % file_name)
       if not found_file:
-        print("Unable to find the file (make sure you have addded the folder to the paths list): %s" % name)
-        break
-      results.append(partial)
+        print("Unable to find the file (make sure you have addded the folder to the paths list): %s" % column)
   return mergeCSV(results)
 
 def parseArguments(args):

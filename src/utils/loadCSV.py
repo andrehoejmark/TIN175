@@ -1,25 +1,73 @@
 
+import math
 import csv
+import numpy
 
 class smhiCSV:
   def __init__(self):
     self.header = []
     self.data = []
+  def shiftDataColumns(self, steps):
+    copy = self.data[:]
+    l = len(copy)
+    broken_row = []
+    for i in self.header:
+      broken_row.append(math.nan)
+    for i in range(0, l):
+      if i - steps < 0 or i - steps >= l:
+        self.data[i] = broken_row
+      else:
+        self.data[i] = copy[(i - steps) % l]
+  def drop(self, steps):
+    if steps > 0:
+      self.data = self.data[steps:]
+  def pop(self, steps):
+    if steps > 0:
+      self.data = self.data[:-steps]
+  def valuesWithDate(self):
+    copy = []
+    for row in self.data:
+      date = row[0].split("-")
+      time = row[1].split(":")
+      copy.append(
+        [int(date[0]), int(date[1]), int(date[2])] +
+        [int(time[0]), int(time[1]), int(time[2])] + row[2:])
+    return numpy.array(copy)
+  def valuesWithoutDate(self):
+    copy = []
+    for row in self.data:
+      copy.append(row[2:])
+    return numpy.array(copy)
+
+def toCellNum(n):
+  if n is "-":
+    return n
+  else:
+    return float(n)
 
 def loadCSV(name):
-  result = smhiCSV()
   try:
+    result = smhiCSV()
     with open(name) as file:
       reader = csv.reader(file, delimiter = ';', quotechar='"')
       result.header = next(reader)
       for row in reader:
-        result.data.append(row)
+        nrow = row[0:2]
+        for n in row[2:]:
+          nrow.append(toCellNum(n))
+        result.data.append(nrow)
+    print("Loaded %d rows from %s" % (len(result.data), name))
+    return result
   except Exception as e:
-    print("Failed to open file: %s" % name)
-  return result
+    print("Failed to open file: %s (error: %s)" % (name, e))
+  return None
 
 def loadInterpolatedCSV(name):
-  return interpolateCSV(loadCSV(name))
+  result = loadCSV(name)
+  if result:
+    return interpolateCSV(result)
+  else:
+    return None
 
 def interpolateCSV(smhi):
   data = smhi.data
@@ -51,6 +99,22 @@ def interpolateCSV(smhi):
           print("Interpolating column %d from row %d to row %d" % (i, last_valid_row, j))
           for k in range(last_invalid_row, j):
             data[k][i] = from_value + (k - last_invalid_row) * step
-            print(data[k][i])
         last_valid_row = j
-  return data
+  return smhi
+
+def separateCSV(smhi, frm, wid):
+  to = frm + wid
+  smhi_a = smhiCSV()
+  smhi_b = smhiCSV()
+  length = len(smhi.data)
+  smhi_a.header = smhi.header[0:frm]
+  for row in smhi.data:
+    smhi_a.data.append(row[0:frm])
+  end = len(smhi.data[0])
+  smhi_a.header = smhi_a.header + smhi.header[to:end]
+  for j in range(0, len(smhi.data)):
+    smhi_a.data[j] = smhi_a.data[j] + smhi.data[j][to:end]
+  smhi_b.header = smhi.header[0:2] + smhi.header[frm:to]
+  for row in smhi.data:
+    smhi_b.data.append(row[0:2] + row[frm:to])
+  return (smhi_a, smhi_b)

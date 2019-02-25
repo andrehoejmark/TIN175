@@ -30,8 +30,8 @@ def readCSV(name, wid = 3, max_len = 500000, is_multi = False):
           part = row[0:wid]
           if is_multi:
             if len(row) < 5:
-              print("Missing value (will default to 0.0) on row (%s) in file: %s" % (row, name))
-              part.append("0.0")
+              print("Missing value (will default to \"-\") on row (%s) in file: %s" % (row, name))
+              part.append("-")
             else:
               part.append(row[wid + 1])
           result.append(part)

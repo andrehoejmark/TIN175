@@ -3,7 +3,7 @@ Predicting temperature of city with weather data from nearby cities
 
 
 
-<H3> Plan and Contributors</H3>
+<H3> Plan and suggested contributors</H3>
 1. Choose dataset finding important variablels (Jithinraj, André)<br>
 2. Visualize dataset (André)<br>
 3. Preprocess the dataset (Felix) <br>

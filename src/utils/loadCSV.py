@@ -3,6 +3,31 @@ import math
 import csv
 import numpy
 
+class Config:
+  def __init__(self, row):
+    self.time_shift = int(row[0])
+    self.training_split = float(row[1])
+    self.start_learning_rate = float(row[2])
+    self.loss_factor = float(row[3])
+    self.min_learning_rate = float(row[4])
+    self.learning_patience = int(row[5])
+    self.num_epochs = int(row[6])
+    self.steps_per_epoch = int(row[7])
+    self.early_stop_patience = int(row[8])
+    self.warmup_steps = int(row[9])
+    self.num_gru = int(row[10])
+    self.activation_function = row[11]
+    self.id = row[12]
+
+class ConfigCSV:
+  def __init__(self, csv):
+    self.rows = csv.data
+  def getConfig(self, nid):
+    for row in self.rows:
+      if row[12] == str(nid):
+        return Config(row)
+    return None
+
 class smhiCSV:
   def __init__(self):
     self.header = []
@@ -45,7 +70,7 @@ def toCellNum(n):
   else:
     return float(n)
 
-def loadCSV(name):
+def loadCSV(name, convert = True):
   try:
     result = smhiCSV()
     with open(name) as file:
@@ -54,13 +79,23 @@ def loadCSV(name):
       for row in reader:
         nrow = row[0:2]
         for n in row[2:]:
-          nrow.append(toCellNum(n))
+          if convert:
+            nrow.append(toCellNum(n))
+          else:
+            nrow.append(n)
         result.data.append(nrow)
     print("Loaded %d rows from %s" % (len(result.data), name))
     return result
   except Exception as e:
     print("Failed to open file: %s (error: %s)" % (name, e))
   return None
+
+def loadConfigCSV(name):
+  result = loadCSV(name, convert = False)
+  if result:
+    return ConfigCSV(result)
+  else:
+    return None
 
 def loadInterpolatedCSV(name):
   result = loadCSV(name)
@@ -96,7 +131,7 @@ def interpolateCSV(smhi):
           from_value = last_valid_data
           to_value = float(data[j][i])
           step = (to_value - from_value) / float(j - last_valid_row)
-          print("Interpolating column %d from row %d to row %d" % (i, last_valid_row, j))
+          # print("Interpolating column %d from row %d to row %d" % (i, last_valid_row, j))
           for k in range(last_invalid_row, j):
             data[k][i] = from_value + (k - last_invalid_row) * step
         last_valid_row = j

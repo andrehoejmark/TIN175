@@ -6,7 +6,7 @@ class NetowrkHyperparameterConfig:
         self.min_learning_rate = 1e-4  # The absolute minimum learning rate.
         self.learning_patience = 0  # The patience to have when not able to improve the learning rate (0 is pretty good to avoid overfitting).
         self.num_epochs = 10
-        self.steps_per_epoch = 64
+        self.steps_per_epoch = 5
         self.early_stop_patience = 0
         self.warmup_steps = 100  # Number to steps before exiting the warm up phase.
         self.num_gated_reoccurring_units = 512
@@ -16,7 +16,7 @@ class NetowrkHyperparameterConfig:
         self.show_output_after_sim = True
         self.read_batch_size = 16
         self.network_type = "GRU"
-        self.output_folder = "../../simulation/"
+        self.output_folder = "../simulation/"
         self.plot_output_sub_name = ""
 
     def getConfigCSV(self):

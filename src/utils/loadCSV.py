@@ -18,6 +18,8 @@ class Config:
     self.num_gru = int(row[10])
     self.activation_function = row[11]
     self.id = row[12]
+    self.loss = row[13]
+    self.network_type = row[14]
 
 class ConfigCSV:
   def __init__(self, csv):

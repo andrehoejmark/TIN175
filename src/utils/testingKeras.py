@@ -41,12 +41,13 @@ SHOW_OUTPUT_AFTER_SIM = True
 READ_BATCH_SIZE = 16
 # READ_SEQUENCE_LENGTH = 24 * 30 * 8 # Read eight months of data.
 READ_SEQUENCE_LENGTH = 24 * 7 # Read a puny fraction of the data.
+NETWORK_TYPE = 'GRU'
 
 PLOT_OUTPUT_FOLDER = "../../simulation/"
 PLOT_OUTPUT_SUB_NAME = ""
 READ_CSV_FILE = "merged_2018_from_oct.csv"
 
-CONFIG_LOCATION = "../../simulation/hyper_parameters.csv"
+CONFIG_LOCATION = "../../simulation/hyperparameters.csv"
 LOADED_CONFIG_FILE = None
 
 def loadConfigFile(name):
@@ -69,6 +70,7 @@ def applyConfig(conf):
   global READ_BATCH_SIZE
   global READ_SEQUENCE_LENGTH
   global PLOT_OUTPUT_SUB_NAME
+  global NETWORK_TYPE
   TIME_SHIFT_IN_HOURS = conf.time_shift
   TRAINING_SPLITTING = conf.training_split
   START_LEARNING_RATE = conf.start_learning_rate
@@ -81,6 +83,7 @@ def applyConfig(conf):
   WARMUP_STEPS = conf.warmup_steps
   NUM_GATED_REOCCURRING_UNITS = conf.num_gru
   ACTIVATION_FUNCTION = conf.activation_function
+  NETWORK_TYPE = conf.network_type
   PLOT_OUTPUT_SUB_NAME = "%s_" % str(conf.id)
 
 def runConfigs():
@@ -191,9 +194,15 @@ def performSimulation(cmd):
       numpy.expand_dims(out_test_scaled, axis=0))
     # Setup network.
     model = Sequential()
-    model.add(
-      GRU(units=NUM_GATED_REOCCURRING_UNITS,
-        return_sequences=True, input_shape=(None, num_in_signals,)))
+    
+    # TODO: Set the network type depending on 'NETWORK_TYPE'
+    if NETWORK_TYPE == 'GRU':
+      model.add(
+        GRU(units=NUM_GATED_REOCCURRING_UNITS,
+          return_sequences=True, input_shape=(None, num_in_signals,)))
+    else:
+      print("Don't know what the network type '%s' is." % NETWORK_TYPE)
+      return False
     model.add(Dense(num_out_signals, activation=ACTIVATION_FUNCTION))
     warmup_steps = WARMUP_STEPS
     

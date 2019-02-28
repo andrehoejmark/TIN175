@@ -1,5 +1,0 @@
-"Time shift in hours";"Training split";"Start learning rate";"Loss factor";"Min learning rate";"Learning patience";"Num epochs";"Steps per epoch";"Early stop patience";"Warmup steps";"Num gated reoccurring units";"Activation function";"ID";"Loss"
-4;0.9;0.001;0.1;0.0001;0;2;4;0;100;512;"sigmoid";0;"TBA"
-4;0.9;0.001;0.1;0.0001;0;2;8;0;100;512;"sigmoid";1;"TBA"
-"-";"-";"-";"-";"-";"-";"-";"-";"-";"-";"-";"-";"-";"-"
-4;0.9;0.001;0.1;0.0001;0;2;16;0;100;512;"sigmoid";2;"TBA"

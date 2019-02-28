@@ -10,7 +10,7 @@ def plot_comparison(start_idx, length=100, data=None, headers=None, hyperparams=
 
     """Plot the predicted and true output-signals."""
 
-    inp = data.in_test
+    inp = data.in_test_scaled
     out_true = data.out_test
 
     end_idx = start_idx + length

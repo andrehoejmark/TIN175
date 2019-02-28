@@ -115,10 +115,13 @@ def performSimulation(cmd="", hyperparams=None, data=None):
     else:
         printHelp(cmd=cmd)
         return False
+
     return True
 
 
-""" Actual program loop
+"""
+ 
+Actual program loop
 
  """
 

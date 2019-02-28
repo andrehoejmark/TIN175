@@ -2,31 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5231db20-d3d5-40bc-ae5f-877272b28fda" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/utils/params.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/utils/plots.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/simulation/hyperparameters.csv" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/hyperparameters.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/simulation/hyperparameters.ods" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/simulation/old/output_plot_0_Gothenburg pressure.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/simulation/old/output_plot_0_Gothenburg temperature.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/simulation/old/output_plot_0_Gothenburg wind direction.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/simulation/old/output_plot_0_Gothenburg wind speed.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/simulation/old/output_plot_1_Gothenburg pressure.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/simulation/old/output_plot_1_Gothenburg temperature.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/simulation/old/output_plot_1_Gothenburg wind direction.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/simulation/old/output_plot_1_Gothenburg wind speed.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/simulation/old/output_plot_2_Gothenburg pressure.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/simulation/old/output_plot_2_Gothenburg temperature.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/simulation/old/output_plot_2_Gothenburg wind direction.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/simulation/old/output_plot_2_Gothenburg wind speed.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/simulation/output_plot_0_Gothenburg pressure.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/simulation/output_plot_0_Gothenburg temperature.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/simulation/output_plot_0_Gothenburg wind direction.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/simulation/output_plot_0_Gothenburg wind speed.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main-tutorial-example-code/danish-cities.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/mnist-example-pythonprogrammingdotnet/mnist.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/.ipynb_checkpoints/Visualization-checkpoint.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/testingKeras.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/testingKeras.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/RNN-wheather-prediction.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/RNN-wheather-prediction.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/plots.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/plots.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/simulation.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/simulation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/weather_sim_checkpoint.keras" beforeDir="false" afterPath="$PROJECT_DIR$/src/weather_sim_checkpoint.keras" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -46,24 +26,24 @@
         <counts>
           <entry key="lappy" value="3" />
           <entry key="png" value="3" />
-          <entry key="py" value="16" />
+          <entry key="py" value="18" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
           <entry key="Image" value="3" />
           <entry key="PLAIN_TEXT" value="3" />
-          <entry key="Python" value="16" />
+          <entry key="Python" value="18" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="517" />
+          <entry key="py" value="1109" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="517" />
+          <entry key="Python" value="1109" />
         </counts>
       </usages-collector>
     </session>
@@ -73,32 +53,33 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/RNN-wheather-prediction.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="703">
-              <caret line="233" column="2" selection-start-line="233" selection-start-column="2" selection-end-line="233" selection-end-column="61" />
+            <state relative-caret-position="390">
+              <caret line="95" column="3" selection-start-line="95" selection-start-column="3" selection-end-line="95" selection-end-column="3" />
               <folding>
-                <element signature="e#149#180#0" expanded="true" />
+                <element signature="e#149#159#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/utils/testingKeras.py">
+        <entry file="file://$PROJECT_DIR$/src/utils/simulation.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2342">
-              <caret line="106" column="48" selection-start-line="106" selection-start-column="48" selection-end-line="106" selection-end-column="48" />
+            <state relative-caret-position="133">
+              <caret line="60" column="6" selection-start-line="60" selection-start-column="6" selection-end-line="60" selection-end-column="6" />
               <folding>
-                <element signature="e#150#181#0" expanded="true" />
+                <element signature="e#0#10#0" expanded="true" />
+                <marker date="1551376565344" expanded="true" signature="3342:3348" ph="..." />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/utils/plots.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="210">
-              <caret line="14" column="20" selection-start-line="14" selection-start-column="20" selection-end-line="14" selection-end-column="20" />
+            <state relative-caret-position="375">
+              <caret line="25" column="50" lean-forward="true" selection-start-line="25" selection-start-column="50" selection-end-line="25" selection-end-column="50" />
               <folding>
                 <element signature="e#0#31#0" expanded="true" />
               </folding>
@@ -107,20 +88,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/utils/download.py">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/utils/compactCSV.py">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/utils/params.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="735">
-              <caret line="49" lean-forward="true" selection-start-line="49" selection-end-line="49" />
+            <state relative-caret-position="568">
+              <caret line="70" selection-start-line="70" selection-end-line="70" />
             </state>
           </provider>
         </entry>
@@ -137,8 +108,10 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>call</find>
-      <find>plot</find>
       <find>Model</find>
+      <find>sim</find>
+      <find>plot</find>
+      <find>colum</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -152,9 +125,10 @@
         <option value="$PROJECT_DIR$/src/params.py" />
         <option value="$PROJECT_DIR$/src/__init__.py" />
         <option value="$PROJECT_DIR$/src/utils/model.py" />
-        <option value="$PROJECT_DIR$/src/utils/plots.py" />
-        <option value="$PROJECT_DIR$/src/RNN-wheather-prediction.py" />
         <option value="$PROJECT_DIR$/src/utils/params.py" />
+        <option value="$PROJECT_DIR$/src/utils/simulation.py" />
+        <option value="$PROJECT_DIR$/src/RNN-wheather-prediction.py" />
+        <option value="$PROJECT_DIR$/src/utils/plots.py" />
       </list>
     </option>
   </component>
@@ -190,7 +164,7 @@
               <item name="TIN175" type="b2602c69:ProjectViewProjectNode" />
               <item name="TIN175" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="utils" type="462c0819:PsiDirectoryNode" />
+              <item name="keras_logs" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -293,13 +267,30 @@
     <frame x="67" y="25" width="1853" height="1055" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Favorites" side_tool="true" />
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.20309906" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Version Control" />
-      <window_info anchor="bottom" id="Python Console" />
-      <window_info anchor="bottom" id="Terminal" />
-      <window_info anchor="bottom" id="Event Log" side_tool="true" />
+      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.32972974" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Version Control" order="7" />
+      <window_info anchor="bottom" id="Terminal" order="8" />
+      <window_info anchor="bottom" id="Python Console" order="9" />
+      <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="R Graphics" order="3" />
+      <window_info anchor="right" id="R Packages" order="4" />
+    </layout>
+    <layout-to-restore>
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.20309906" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
       <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.32972974" />
@@ -307,48 +298,29 @@
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="right" id="R Packages" />
-      <window_info anchor="right" id="R Graphics" />
+      <window_info anchor="bottom" id="Version Control" order="7" />
+      <window_info anchor="bottom" id="Terminal" order="8" />
+      <window_info anchor="bottom" id="Python Console" order="9" />
+      <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-    </layout>
+      <window_info anchor="right" id="R Graphics" order="3" />
+      <window_info anchor="right" id="R Packages" order="4" />
+    </layout-to-restore>
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/simulation/output_plot_2_Gothenburg wind speed.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/utils/keras_logs/events.out.tfevents.1551364973.lappy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="16" column="23" selection-start-line="16" selection-start-column="23" selection-end-line="16" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/utils/keras_logs/events.out.tfevents.1551366082.lappy">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/utils/keras_logs/events.out.tfevents.1551366576.lappy">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/simulation/output_plot_0_Gothenburg temperature.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/simulation/output_plot_0_Gothenburg pressure.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
+    <entry file="file://$PROJECT_DIR$/simulation/output_plot_2_Gothenburg wind speed.png" />
+    <entry file="file://$PROJECT_DIR$/utils/keras_logs/events.out.tfevents.1551364973.lappy" />
+    <entry file="file://$PROJECT_DIR$/utils/keras_logs/events.out.tfevents.1551366082.lappy" />
+    <entry file="file://$PROJECT_DIR$/utils/keras_logs/events.out.tfevents.1551366576.lappy" />
+    <entry file="file://$PROJECT_DIR$/simulation/output_plot_0_Gothenburg temperature.png" />
+    <entry file="file://$PROJECT_DIR$/simulation/output_plot_0_Gothenburg pressure.png" />
     <entry file="file://$PROJECT_DIR$/src/utils/__init__.py">
       <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/utils/testingKeras.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3225">
-          <caret line="215" column="61" selection-start-line="215" selection-start-column="42" selection-end-line="215" selection-end-column="61" />
-        </state>
-      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/__init__.py">
       <provider selected="true" editor-type-id="text-editor" />
@@ -359,47 +331,43 @@
     <entry file="file://$PROJECT_DIR$/src/utils/compactCSV.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/utils/model.py">
+    <entry file="file://$PROJECT_DIR$/src/utils/model.py" />
+    <entry file="file://$PROJECT_DIR$/src/utils/testingKeras.py" />
+    <entry file="file://$PROJECT_DIR$/src/utils/params.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="6" selection-start-column="6" selection-end-column="6" />
+        <state relative-caret-position="568">
+          <caret line="70" selection-start-line="70" selection-end-line="70" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/utils/testingKeras.py">
+    <entry file="file://$PROJECT_DIR$/src/RNN-wheather-prediction.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2342">
-          <caret line="106" column="48" selection-start-line="106" selection-start-column="48" selection-end-line="106" selection-end-column="48" />
+        <state relative-caret-position="390">
+          <caret line="95" column="3" selection-start-line="95" selection-start-column="3" selection-end-line="95" selection-end-column="3" />
           <folding>
-            <element signature="e#150#181#0" expanded="true" />
+            <element signature="e#149#159#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/utils/simulation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="133">
+          <caret line="60" column="6" selection-start-line="60" selection-start-column="6" selection-end-line="60" selection-end-column="6" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+            <marker date="1551376565344" expanded="true" signature="3342:3348" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/utils/plots.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="14" column="20" selection-start-line="14" selection-start-column="20" selection-end-line="14" selection-end-column="20" />
+        <state relative-caret-position="375">
+          <caret line="25" column="50" lean-forward="true" selection-start-line="25" selection-start-column="50" selection-end-line="25" selection-end-column="50" />
           <folding>
             <element signature="e#0#31#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/RNN-wheather-prediction.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="703">
-          <caret line="233" column="2" selection-start-line="233" selection-start-column="2" selection-end-line="233" selection-end-column="61" />
-          <folding>
-            <element signature="e#149#180#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/utils/params.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="735">
-          <caret line="49" lean-forward="true" selection-start-line="49" selection-end-line="49" />
         </state>
       </provider>
     </entry>

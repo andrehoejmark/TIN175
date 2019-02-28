@@ -47,3 +47,24 @@ Plot output sub name = %s
        self.activation_function, self.time_shift_in_hours, self.training_splitting, self.show_output_after_sim,
        self.read_batch_size,
        self.network_type, self.output_folder, self.plot_output_sub_name))
+
+
+def convConfigToHyperparams(conf):
+    hyperparams = NetowrkHyperparameterConfig()
+    hyperparams.time_shift_in_hours = conf.time_shift
+    hyperparams.training_splitting = conf.training_split
+    hyperparams.start_learning_rate = conf.start_learning_rate
+    hyperparams.loss_factor = conf.loss_factor
+    hyperparams.min_learning_rate = conf.min_learning_rate
+    hyperparams.learning_patience = conf.learning_patience
+    hyperparams.num_epochs = conf.num_epochs
+    hyperparams.steps_per_epoch = conf.steps_per_epoch
+    hyperparams.early_stop_patience = conf.early_stop_patience
+    hyperparams.warmup_steps = conf.warmup_steps
+    hyperparams.num_gated_reoccurring_units = conf.num_gru
+    hyperparams.activation_function = conf.activation_function
+    hyperparams.network_type = conf.network_type
+    hyperparams.plot_output_sub_name = "%s_" % str(conf.id)
+    hyperparams.read_batch_size = conf.read_batch_size
+    return hyperparams
+

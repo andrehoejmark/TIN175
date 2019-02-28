@@ -8,7 +8,7 @@ class NetowrkHyperparameterConfig:
         self.num_epochs = 10
         self.steps_per_epoch = 5
         self.early_stop_patience = 0
-        self.warmup_steps = 100  # Number to steps before exiting the warm up phase.
+        self.warmup_steps = 10  # Number to steps before exiting the warm up phase.
         self.num_gated_reoccurring_units = 512
         self.activation_function = 'sigmoid'
         self.time_shift_in_hours = 12
@@ -16,11 +16,11 @@ class NetowrkHyperparameterConfig:
         self.show_output_after_sim = True
         self.read_batch_size = 16
         self.network_type = "GRU"
-        self.output_folder = "../simulation/"
+        self.output_folder = "simulation/"
         self.plot_output_sub_name = ""
 
-    def getConfigCSV(self):
-        print("""
+    def getConfigString(self):
+        return ("""
 # Current config
 Read sequence length = %d
 Start learning rate = %f

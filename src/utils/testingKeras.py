@@ -8,95 +8,101 @@ import keras
 import numpy
 import os
 import sys
-
 import tensorflow
 
 from tensorflow.python.keras.models import Sequential
 from tensorflow.python.keras.layers import Input, Dense, GRU, Embedding
 from tensorflow.python.keras.optimizers import RMSprop
 from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard, ReduceLROnPlateau
-
 from sklearn.preprocessing import MinMaxScaler
-
 from loadCSV import loadInterpolatedCSV, separateCSV, loadConfigCSV
 
-## 
-## You can fiddle with these values in order to change the simulation.
-## 
-
-START_LEARNING_RATE = 1e-3 # The initial learning rate.
-LOSS_FACTOR = 0.1 # The change of learning rate when unsuccessful in improving the result.
-MIN_LEARNING_RATE = 1e-4 # The absolute minimum learning rate.
-LEARNING_PATIENCE = 0 # The patience to have when not able to improve the learning rate (0 is pretty good to avoid overfitting).
-NUM_EPOCHS = 10
-STEPS_PER_EPOCH = 64
-EARLY_STOP_PATIENCE = 0
-WARMUP_STEPS = 100 # Number to steps before exiting the warm up phase.
-NUM_GATED_REOCCURRING_UNITS = 512
-ACTIVATION_FUNCTION = 'sigmoid'
-TIME_SHIFT_IN_HOURS = 12
-TRAINING_SPLITTING = 0.9
-SHOW_OUTPUT_AFTER_SIM = True
-
-READ_BATCH_SIZE = 16
-# READ_SEQUENCE_LENGTH = 24 * 30 * 8 # Read eight months of data.
-READ_SEQUENCE_LENGTH = 24 * 7 # Read a puny fraction of the data.
-NETWORK_TYPE = 'GRU'
-
-PLOT_OUTPUT_FOLDER = "../../simulation/"
-PLOT_OUTPUT_SUB_NAME = ""
-READ_CSV_FILE = "merged_2018_from_oct.csv"
-
+# Global parameters.
+DATASET_CSV_FILE = "merged_2018_from_oct.csv"
 CONFIG_LOCATION = "../../simulation/hyperparameters.csv"
 LOADED_CONFIG_FILE = None
+OUTPUT_TARGET_HEADERS = ["Gothenburg temperature", "Gothenburg wind direction", "Gothenburg wind speed", "Gothenburg pressure"]
+NUM_TARGET_COLUMNS = len(OUTPUT_TARGET_HEADERS)
+
+class NetowrkHyperparameterConfig:
+  def __init__(self):
+    self.read_sequence_length = 24 * 7 * 2  # How much data to read from the dataset.
+    self.start_learning_rate = 1e-3                      # The initial learning rate.
+    self.loss_factor = 0.1                               # The change of learning rate when unsuccessful in improving the result.
+    self.min_learning_rate = 1e-4                        # The absolute minimum learning rate.
+    self.learning_patience = 0                           # The patience to have when not able to improve the learning rate (0 is pretty good to avoid overfitting).
+    self.num_epochs = 10
+    self.steps_per_epoch = 64
+    self.early_stop_patience = 0
+    self.warmup_steps = 100                              # Number to steps before exiting the warm up phase.
+    self.num_gated_reoccurring_units = 512
+    self.activation_function = 'sigmoid'
+    self.time_shift_in_hours = 12
+    self.training_splitting = 0.9
+    self.show_output_after_sim = True
+    self.read_batch_size = 16
+    self.network_type = "GRU"
+    self.output_folder = "../../simulation/"
+    self.plot_output_sub_name = ""
+  def getConfigCSV(self):
+    print("""
+# Current config
+Read sequence length = %d
+Start learning rate = %f
+Loss factor = %f
+Min learning rate = %f
+Learning patience = %d
+Num epochs = %d
+Steps per epoch = %d
+Early stop patience = %d
+Warpup steps = %d
+Num GRU = %d
+Activation function = %s
+Time shift in hours = %d
+Training splitting = %f
+Show output after sim = %d
+Read batch size = %d
+Network type = %s
+Output folder = %s
+Plot output sub name = %s
+""" % (self.read_sequence_length, self.start_learning_rate, self.loss_factor, self.min_learning_rate, self.learning_patience,
+  self.num_epochs, self.steps_per_epoch, self.early_stop_patience, self.warmup_steps, self.num_gated_reoccurring_units,
+  self.activation_function, self.time_shift_in_hours, self.training_splitting, self.show_output_after_sim, self.read_batch_size,
+  self.network_type, self.output_folder, self.plot_output_sub_name))
 
 def loadConfigFile(name):
   global LOADED_CONFIG_FILE
   LOADED_CONFIG_FILE = loadConfigCSV(CONFIG_LOCATION)
 
-def applyConfig(conf):
-  global START_LEARNING_RATE
-  global LOSS_FACTOR
-  global MIN_LEARNING_RATE
-  global LEARNING_PATIENCE
-  global NUM_EPOCHS
-  global STEPS_PER_EPOCH
-  global EARLY_STOP_PATIENCE
-  global WARMUP_STEPS
-  global NUM_GATED_REOCCURRING_UNITS
-  global ACTIVATION_FUNCTION
-  global TIME_SHIFT_IN_HOURS
-  global TRAINING_SPLITTING
-  global READ_BATCH_SIZE
-  global READ_SEQUENCE_LENGTH
-  global PLOT_OUTPUT_SUB_NAME
-  global NETWORK_TYPE
-  TIME_SHIFT_IN_HOURS = conf.time_shift
-  TRAINING_SPLITTING = conf.training_split
-  START_LEARNING_RATE = conf.start_learning_rate
-  LOSS_FACTOR = conf.loss_factor
-  MIN_LEARNING_RATE = conf.min_learning_rate
-  LEARNING_PATIENCE = conf.learning_patience
-  NUM_EPOCHS = conf.num_epochs
-  STEPS_PER_EPOCH = conf.steps_per_epoch
-  EARLY_STOP_PATIENCE = conf.early_stop_patience
-  WARMUP_STEPS = conf.warmup_steps
-  NUM_GATED_REOCCURRING_UNITS = conf.num_gru
-  ACTIVATION_FUNCTION = conf.activation_function
-  NETWORK_TYPE = conf.network_type
-  PLOT_OUTPUT_SUB_NAME = "%s_" % str(conf.id)
+def convConfigToHyperparams(conf):
+  hyperparams = NetowrkHyperparameterConfig()
+  hyperparams.time_shift_in_hours = conf.time_shift
+  hyperparams.training_splitting = conf.training_split
+  hyperparams.start_learning_rate = conf.start_learning_rate
+  hyperparams.loss_factor = conf.loss_factor
+  hyperparams.min_learning_rate = conf.min_learning_rate
+  hyperparams.learning_patience = conf.learning_patience
+  hyperparams.num_epochs = conf.num_epochs
+  hyperparams.steps_per_epoch = conf.steps_per_epoch
+  hyperparams.early_stop_patience = conf.early_stop_patience
+  hyperparams.warmup_steps = conf.warmup_steps
+  hyperparams.num_gated_reoccurring_units = conf.num_gru
+  hyperparams.activation_function = conf.activation_function
+  hyperparams.network_type = conf.network_type
+  hyperparams.plot_output_sub_name = "%s_" % str(conf.id)
+  hyperparams.read_batch_size = conf.read_batch_size
+  return hyperparams
 
 def runConfigs():
-  global SHOW_OUTPUT_AFTER_SIM
   if LOADED_CONFIG_FILE:
     cid = 0
     conf = None
     while True:
       conf = LOADED_CONFIG_FILE.getConfig(cid)
       if conf:
-        SHOW_OUTPUT_AFTER_SIM = False
-        applyConfig(conf)
-        performSimulation("simulate")
+        hyperparams = convConfigToHyperparams(conf)
+        hyperparams.show_output_after_sim = False
+        performSimulation("simulate", hyperparams)
         cid = cid + 1
       else:
         print("Ended config run at cid: %d" % cid)
@@ -104,25 +110,37 @@ def runConfigs():
   else:
     print("No config CSV file has been loaded.")
 
-def savePlotToFile(name):
-  plt.savefig("%s/%s.png" % (PLOT_OUTPUT_FOLDER, name), bbox_inches = "tight")
+def savePlotToFile(name, folder):
+  plt.savefig("%s/%s.png" % (folder, name), bbox_inches = "tight")
 
 #
 # Load data from CSV files.
 #
 
-data = loadInterpolatedCSV(READ_CSV_FILE)
+data = loadInterpolatedCSV(DATASET_CSV_FILE)
 
 if not data:
   sys.exit(1)
 
-target_names = ["Gothenburg temperature", "Gothenburg wind direction", "Gothenburg wind speed", "Gothenburg pressure"]
-num_target_columns = len(target_names)
+# Visulisation.
+def plotColumn(header, y_axis_unit, rows, column_idx, hyperparams):
+  column = []
+  for row in rows:
+    column.append(row[column_idx])
+  plt.figure(figsize=(15,5))
+  plt.plot(column, label=header)
+  plt.ylabel(y_axis_unit)
+  plt.legend()
+  if cmd == "view_input_plots":
+    plt.show()
+  else:
+    savePlotToFile("input_plot_%s" % header, "./")
 
-def performSimulation(cmd):
-  (smhi_in, smhi_out) = separateCSV(data, 6, num_target_columns)
-  time_shift_hours = TIME_SHIFT_IN_HOURS
-  training_split = TRAINING_SPLITTING
+def performSimulation(cmd, hyperparams):
+  hyperparams.getConfigCSV()
+  (smhi_in, smhi_out) = separateCSV(data, 6, NUM_TARGET_COLUMNS)
+  time_shift_hours = hyperparams.time_shift_in_hours
+  training_split = hyperparams.training_splitting
   # Perform time shift.
   smhi_out.shiftDataColumns(-time_shift_hours)
   smhi_in.drop(time_shift_hours)
@@ -134,21 +152,6 @@ def performSimulation(cmd):
   print(in_values.shape)
   # print(out_values)
   print(out_values.shape)
-  # 
-  # Visulisation.
-  # 
-  def plotColumn(header, y_axis_unit, rows, column_idx):
-    column = []
-    for row in rows:
-      column.append(row[column_idx])
-    plt.figure(figsize=(15,5))
-    plt.plot(column, label=header)
-    plt.ylabel(y_axis_unit)
-    plt.legend()
-    if cmd == "view_input_plots":
-      plt.show()
-    else:
-      savePlotToFile("input_plot_%s" % header)
   # Parse command.
   if cmd == "view_input_plots" or cmd == "save_input_plots":
     units = ["Temperature [C]", "Wind direction [deg]", "Wind speed [m/s]", "Pressure [kilo Pascal]"]
@@ -170,7 +173,7 @@ def performSimulation(cmd):
     ## 
     ## The following is a modified adaptation of the tutorial code.
     ## 
-    print(READ_SEQUENCE_LENGTH)
+    print("Reading %d rows of data from the dataset." % hyperparams.read_sequence_length)
     num_in_signals = in_values.shape[1]
     num_out_signals = out_values.shape[1]
     def batch_generator(batch_size, sequence_length):
@@ -185,7 +188,7 @@ def performSimulation(cmd):
           in_batch[i] = in_train_scaled[idx:idx+sequence_length]
           out_batch[i] = out_train_scaled[idx:idx+sequence_length]
           yield (in_batch, out_batch)
-    generator = batch_generator(READ_BATCH_SIZE, READ_SEQUENCE_LENGTH)
+    generator = batch_generator(hyperparams.read_batch_size, hyperparams.read_sequence_length)
     in_batch, out_batch = next(generator)
     print(in_batch.shape)
     print(out_batch.shape)
@@ -196,15 +199,15 @@ def performSimulation(cmd):
     model = Sequential()
     
     # TODO: Set the network type depending on 'NETWORK_TYPE'
-    if NETWORK_TYPE == 'GRU':
+    if hyperparams.network_type == "GRU":
       model.add(
-        GRU(units=NUM_GATED_REOCCURRING_UNITS,
+        GRU(units=hyperparams.num_gated_reoccurring_units,
           return_sequences=True, input_shape=(None, num_in_signals,)))
     else:
-      print("Don't know what the network type '%s' is." % NETWORK_TYPE)
+      print("Don't know what the network type '%s' is." % hyperparams.network_type)
       return False
-    model.add(Dense(num_out_signals, activation=ACTIVATION_FUNCTION))
-    warmup_steps = WARMUP_STEPS
+    model.add(Dense(num_out_signals, activation=hyperparams.activation_function))
+    warmup_steps = hyperparams.warmup_steps
     
     def loss_mse_warmup(out_true, out_pred):
       "Calculate the Mean Squared Error"
@@ -213,7 +216,7 @@ def performSimulation(cmd):
       loss = tensorflow.losses.mean_squared_error(labels=out_true_slice, predictions=out_pred_slice)
       loss_mean = tensorflow.reduce_mean(loss)
       return loss_mean
-    optimizer = RMSprop(lr=START_LEARNING_RATE)
+    optimizer = RMSprop(lr=hyperparams.start_learning_rate)
     model.compile(loss=loss_mse_warmup, optimizer=optimizer)
     model.summary()
     path_checkpoint = 'weather_sim_checkpoint.keras'
@@ -222,18 +225,18 @@ def performSimulation(cmd):
       verbose=1,
       save_weights_only=True,
       save_best_only=True)
-    callback_early_stopping = EarlyStopping(monitor='val_loss', patience=EARLY_STOP_PATIENCE, verbose=1)
+    callback_early_stopping = EarlyStopping(monitor='val_loss', patience=hyperparams.early_stop_patience, verbose=1)
     callback_tensorboard = TensorBoard(log_dir='./keras_logs/', histogram_freq=0, write_graph=False)
     callback_reduce_lr = ReduceLROnPlateau(monitor='val_loss',
-      factor=LOSS_FACTOR,
-      min_lr=MIN_LEARNING_RATE,
-      patience=LEARNING_PATIENCE,
+      factor=hyperparams.loss_factor,
+      min_lr=hyperparams.min_learning_rate,
+      patience=hyperparams.learning_patience,
       verbose=1)
     callbacks = [callback_early_stopping, callback_checkpoint, callback_tensorboard, callback_reduce_lr]
     print("Performing simulation...")
     model.fit_generator(generator=generator,
-      epochs=NUM_EPOCHS,
-      steps_per_epoch=STEPS_PER_EPOCH,
+      epochs=hyperparams.num_epochs,
+      steps_per_epoch=hyperparams.steps_per_epoch,
       validation_data=validation_data,
       callbacks=callbacks)
     try:
@@ -260,20 +263,20 @@ def performSimulation(cmd):
       inp = numpy.expand_dims(inp, axis=0)
       out_pred = model.predict(inp)
       out_pred_rescaled = out_scaler.inverse_transform(out_pred[0])
-      for signal in range(0, num_target_columns):
+      for signal in range(0, NUM_TARGET_COLUMNS):
         signal_pred = out_pred_rescaled[:, signal]
         signal_true = out_true[:, signal]
         plt.figure(figsize=(15,5))
         plt.plot(signal_true, label='true')
         plt.plot(signal_pred, label='pred')
         p = plt.axvspan(0, warmup_steps, facecolor='black', alpha=0.15)
-        header = target_names[signal]
+        header = OUTPUT_TARGET_HEADERS[signal]
         plt.ylabel(header)
         plt.legend()
-        if SHOW_OUTPUT_AFTER_SIM:
+        if hyperparams.show_output_after_sim:
           plt.show()
         else:
-          savePlotToFile("output_plot_%s%s" % (PLOT_OUTPUT_SUB_NAME, header))
+          savePlotToFile("output_plot_%s%s" % (hyperparams.plot_output_sub_name, header), hyperparams.output_folder)
     # Render comparison graphs.
     plot_comparison(start_idx=0, length=480, train=True)
   else:
@@ -292,4 +295,4 @@ while True:
     loadConfigFile(CONFIG_LOCATION)
     runConfigs()
   else:
-    performSimulation(cmd)
+    performSimulation(cmd, NetowrkHyperparameterConfig())

@@ -20,6 +20,7 @@ class Config:
     self.id = row[12]
     self.loss = row[13]
     self.network_type = row[14]
+    self.read_batch_size = int(row[15])
 
 class ConfigCSV:
   def __init__(self, csv):

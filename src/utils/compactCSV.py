@@ -162,7 +162,7 @@ def parseArguments(args):
   global MIN_TIME
   global MAX_TIME
   input_city = []
-  output_path = "merged.csv"
+  output_path = "merged.csv.old"
   length = len(args)
   input_max_len = 500000
   parser = argparse.ArgumentParser(description = "A CSV file merging script.")

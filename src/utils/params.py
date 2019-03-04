@@ -18,6 +18,7 @@ class NetowrkHyperparameterConfig:
         self.network_type = "GRU"
         self.output_folder = "simulation/"
         self.plot_output_sub_name = ""
+        self.outputs = 4
 
     def getConfigString(self):
         return ("""
@@ -40,13 +41,14 @@ Read batch size = %d
 Network type = %s
 Output folder = %s
 Plot output sub name = %s
+outputs = %d
 """ % (self.read_sequence_length, self.start_learning_rate, self.loss_factor, self.min_learning_rate,
        self.learning_patience,
        self.num_epochs, self.steps_per_epoch, self.early_stop_patience, self.warmup_steps,
        self.num_gated_reoccurring_units,
        self.activation_function, self.time_shift_in_hours, self.training_splitting, self.show_output_after_sim,
        self.read_batch_size,
-       self.network_type, self.output_folder, self.plot_output_sub_name))
+       self.network_type, self.output_folder, self.plot_output_sub_name, self.outputs))
 
 
 def convConfigToHyperparams(conf):
@@ -66,5 +68,6 @@ def convConfigToHyperparams(conf):
     hyperparams.network_type = conf.network_type
     hyperparams.plot_output_sub_name = "%s_" % str(conf.id)
     hyperparams.read_batch_size = conf.read_batch_size
+    hyperparams.outputs = conf.outputs
     return hyperparams
 

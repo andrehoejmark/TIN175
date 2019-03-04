@@ -13,10 +13,10 @@ def plot_comparison(start_idx, length=100, data=None, headers=None, hyperparams=
     inp = data.in_test_scaled
     out_true = data.out_test
 
-    end_idx = start_idx + length
-    inp = inp[start_idx:end_idx]
+    end_idx = len(inp)
+    inp = inp[(end_idx-length):end_idx]
 
-    out_true = out_true[start_idx:end_idx]
+    out_true = out_true[(end_idx-length):end_idx]
     inp = np.expand_dims(inp, axis=0)
 
     out_pred = data.model.predict(inp)

@@ -6,12 +6,13 @@ def savePlotToFile(name, folder):
     plt.savefig("%s/%s.png" % (folder, name), bbox_inches="tight")
 
 
+
 def plot_comparison(start_idx, length=100, data=None, headers=None, hyperparams=None):
 
     """Plot the predicted and true output-signals."""
 
-    inp = data.in_test_scaled
-    out_true = data.out_test
+    inp = data.in_train_scaled
+    out_true = data.out_train
 
     end_idx = len(inp)
     inp = inp[(end_idx-length):end_idx]
@@ -36,6 +37,40 @@ def plot_comparison(start_idx, length=100, data=None, headers=None, hyperparams=
         else:
             savePlotToFile("output_plot_%s%s" % (hyperparams.plot_output_sub_name, header),
                            hyperparams.output_folder)
+
+def plot_multi_comparison(start_idx, length=100, datas=[], headers=None):
+
+    """Plot the predicted and true output-signals."""
+    if len(datas) <= 0:
+      return
+    
+    # They all should hold the same training data anyway, so
+    # just pick the first one.
+    end_idx = start_idx + length
+    out_true = datas[0].out_train
+    out_true = out_true[start_idx:end_idx]
+
+    outs = []
+
+    for data in datas:
+      inp = data.in_train_scaled
+      inp = inp[start_idx:end_idx]
+      inp = np.expand_dims(inp, axis=0)
+      out_pred = data.model.predict(inp)
+      out_pred_rescaled = data.out_scaler.inverse_transform(out_pred[0])
+      outs.append(out_pred_rescaled)
+
+    for signal in range(0, len(headers)):
+        signal_true = out_true[:, signal]
+        plt.figure(figsize=(15, 5))
+        plt.plot(signal_true, label='true')
+        for out in outs:
+          signal_pred = out[:, signal]
+          plt.plot(signal_pred, label= "pred %s" % data.id )
+        header = headers[signal]
+        plt.ylabel(header)
+        plt.legend()
+        savePlotToFile("multi_graph.png", "./")
 
 
 def plotColumn(header, y_axis_unit, rows, column_idx, cmd=None):

@@ -137,7 +137,7 @@ def performSimulation(cmd="", hyperparams=None, data=None):
         data.splitAndNormalize()
         data.createValidationData()
         data.setupAndPerformSimulation(hyperparams)
-        data.performSimulation()
+        data.performSimulation(hyperparams)
 
         try:
             data.model.load_weights(data.path_checkpoint)

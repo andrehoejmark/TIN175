@@ -1,9 +1,9 @@
-"Time shift in hours";"Training split";"Start learning rate";"Loss factor";"Min learning rate";"Learning patience";"Num epochs";"Steps per epoch";"Early stop patience";"Warmup steps";"Num gated reoccurring units";"Activation function";"ID";"Loss";"Network type";"Batch size"
-4;0.9;0.001;0.1;0.0001;1;10;16;0;10;512;"sigmoid";0;"TBA";"GRU";12
-4;0.9;0.001;0.1;0.0001;1;10;16;0;10;512;"sigmoid";1;"TBA";"LSTM";12
-12;0.9;0.001;0.1;0.0001;1;10;16;0;10;512;"sigmoid";2;"TBA";"GRU";12
-12;0.9;0.001;0.1;0.0001;1;10;16;0;10;512;"sigmoid";3;"TBA";"LSTM";12
-24;0.9;0.001;0.1;0.0001;1;10;16;0;10;512;"sigmoid";4;"TBA";"GRU";12
-24;0.9;0.001;0.1;0.0001;1;10;16;0;10;512;"sigmoid";5;"TBA";"LSTM";12
-72;0.9;0.001;0.1;0.0001;1;10;16;0;10;512;"sigmoid";6;"TBA";"GRU";12
-72;0.9;0.001;0.1;0.0001;1;10;16;0;10;512;"sigmoid";7;"TBA";"LSTM";12
+"Time shift in hours";"Training split";"Start learning rate";"Loss factor";"Min learning rate";"Learning patience";"Num epochs";"Steps per epoch";"Early stop patience";"Warmup steps";"Num gated reoccurring units";"Activation function";"ID";"Loss";"Network type";"Batch size";"Outputs"
+4;0.9;0.001;0.1;0.0001;1;10;16;0;10;512;"sigmoid";0;"TBA";"GRU";12;4
+4;0.9;0.001;0.1;0.0001;1;10;16;0;10;512;"sigmoid";1;"TBA";"LSTM";12;4
+12;0.9;0.001;0.1;0.0001;1;10;16;0;10;512;"sigmoid";2;"TBA";"GRU";12;4
+12;0.9;0.001;0.1;0.0001;1;10;16;0;10;512;"sigmoid";3;"TBA";"LSTM";12;4
+24;0.9;0.001;0.1;0.0001;1;10;16;0;10;512;"sigmoid";4;"TBA";"GRU";12;4
+24;0.9;0.001;0.1;0.0001;1;10;16;0;10;512;"sigmoid";5;"TBA";"LSTM";12;4
+72;0.9;0.001;0.1;0.0001;1;10;16;0;10;512;"sigmoid";6;"TBA";"GRU";12;4
+72;0.9;0.001;0.1;0.0001;1;10;16;0;10;512;"sigmoid";7;"TBA";"LSTM";12;4

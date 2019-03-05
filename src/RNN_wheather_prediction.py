@@ -11,8 +11,8 @@ import numpy
 
 # Global parameters.
 
-DATASET_CSV_FILE="./utils/merged19982018.csv"
-CONFIG_LOCATION="./hyperparameters/hyperparameters.csv"
+DATASET_CSV_FILE="./src/utils/merged19982018.csv"
+CONFIG_LOCATION="./src/hyperparameters.csv"
 LOADED_CONFIG_FILE=None
 
 OUTPUT_TARGET_HEADERS=["Gothenburg temperature", "Gothenburg wind direction", "Gothenburg wind speed",

@@ -103,7 +103,7 @@ class SimulationData:
         self.warmup_steps = hyperparams.warmup_steps
 
         optimizer = RMSprop(lr=hyperparams.start_learning_rate)
-        self.model.compile(loss=self.loss_function, optimizer=optimizer)
+        self.model.compile(loss=self.lossMSEWarmup, optimizer=optimizer)
 
         self.path_checkpoint = hyperparams.output_folder + 'weather_sim_checkpoint.keras'
         callback_checkpoint = ModelCheckpoint(filepath=self.path_checkpoint,

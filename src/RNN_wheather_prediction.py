@@ -5,14 +5,14 @@ import sys
 import os
 from src.utils.loadCSV import loadInterpolatedCSV, loadConfigCSV
 from src.utils.params import NetowrkHyperparameterConfig, convConfigToHyperparams
-from src.utils.plots import plotColumn, plot_comparison
+from src.utils.plots import plotColumn, plot_comparison, plot_multi_comparison
 from src.utils.simulation import SimulationData
 import numpy
 
 # Global parameters.
 
-DATASET_CSV_FILE="./utils/merged19982018.csv"
-CONFIG_LOCATION="./hyperparameters/hyperparameters.csv"
+DATASET_CSV_FILE="./src/utils/merged19982018.csv"
+CONFIG_LOCATION="./src/hyperparameters.csv"
 LOADED_CONFIG_FILE=None
 
 OUTPUT_TARGET_HEADERS=["Gothenburg temperature", "Gothenburg wind direction", "Gothenburg wind speed",
@@ -25,6 +25,47 @@ def loadConfigFile(name):
     global LOADED_CONFIG_FILE
     LOADED_CONFIG_FILE=loadConfigCSV(CONFIG_LOCATION)
 
+def genCompareGraphs():
+  if LOADED_CONFIG_FILE:
+        cid = 0
+        conf = None
+        nets = []
+        while True:
+            conf = LOADED_CONFIG_FILE.getConfig(cid)
+            if conf:
+                hyperparams = convConfigToHyperparams(conf)
+                if not os.path.isdir(hyperparams.output_folder):
+                  try:
+                    os.mkdir(hyperparams.output_folder)
+                  except OSError:
+                     print("Unable to create output folder \"%s\" (you might have to remove the old folder)" % hyperparams.output_folder)
+                     sys.exit(1)
+                hyperparams.output_folder = hyperparams.output_folder + ("ID_%s/" % conf.id)
+                if not os.path.isdir(hyperparams.output_folder):
+                  try:
+                    os.mkdir(hyperparams.output_folder)
+                  except OSError:
+                     print("Unable to create modified id output folder \"%s\" (you might have to remove the old files)" % hyperparams.output_folder)
+                     sys.exit(1)
+                net = SimulationData(hyperparams, headers = OUTPUT_TARGET_HEADERS, data = data)
+                net.splitAndNormalize()
+                net.createValidationData()
+                net.setupAndPerformSimulation(hyperparams)
+                try:
+                    net.model.load_weights(net.path_checkpoint)
+                except Exception as error:
+                    print("Error trying to load checkpoint: %s" % error)
+                    return False
+                nets.append(net)
+                cid = cid + 1
+            else:
+                print("Ended config run at cid: %d" % cid)
+                break
+        plot_multi_comparison(start_idx=0, length=480, datas=nets, headers=OUTPUT_TARGET_HEADERS)
+  else:
+      print("No config CSV file has been loaded.")
+      return False
+  return True
 
 def runConfigs():
     if LOADED_CONFIG_FILE:
@@ -96,6 +137,7 @@ def performSimulation(cmd="", hyperparams=None, data=None):
         data.splitAndNormalize()
         data.createValidationData()
         data.setupAndPerformSimulation(hyperparams)
+        data.performSimulation(hyperparams)
 
         try:
             data.model.load_weights(data.path_checkpoint)
@@ -122,7 +164,7 @@ def performSimulation(cmd="", hyperparams=None, data=None):
  
 Actual program loop
 
- """
+"""
 
 # Load data from CSV files.
 data=loadInterpolatedCSV(DATASET_CSV_FILE)
@@ -137,7 +179,10 @@ while True:
         break
     elif cmd=="help":
         printHelp(cmd=cmd)
-    elif cmd=="run_config":
+    elif cmd == "agg":
+        loadConfigFile(CONFIG_LOCATION)
+        genCompareGraphs()
+    elif cmd == "run_config":
         loadConfigFile(CONFIG_LOCATION)
         runConfigs()
     else:

@@ -1,6 +1,6 @@
 class NetowrkHyperparameterConfig:
     def __init__(self):
-        self.read_sequence_length = 24 * 7 * 2  # How much data to read from the dataset.
+        self.read_sequence_length = 24 * 7 * 3  # How much data to read from the dataset.
         self.start_learning_rate = 1e-3  # The initial learning rate.
         self.loss_factor = 0.1  # The change of learning rate when unsuccessful in improving the result.
         self.min_learning_rate = 1e-4  # The absolute minimum learning rate.

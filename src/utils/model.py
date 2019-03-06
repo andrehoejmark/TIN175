@@ -3,13 +3,20 @@ from tensorflow.python.keras.layers import Dense, GRU, LSTM, TimeDistributed
 from tensorflow.python.keras.optimizers import RMSprop
 
 
-"""
-Models defined as functions which creates and returns the model of choice
-each model needs their own function but hyperparams remain shared
-"""
+############################################################################
+#  Models defined as functions which creates and returns the model of choice
+#  each model needs their own function but hyperparameters remain shared,
+#  mostly just matches network type (GRU/LSTM) from hyperparams.
+############################################################################
 
 
 def tutorial_model(hyperparams=None, in_shape=None, out_shape=None):
+    """
+    :param hyperparams: Set of hyperparameters
+    :param in_shape: Shape of model inputs
+    :param out_shape: Shape of model outputs
+    :return: A keras model based on the tutorial
+    """
     model = Sequential()
 
     if hyperparams.network_type == 'LSTM':
@@ -26,7 +33,8 @@ def tutorial_model(hyperparams=None, in_shape=None, out_shape=None):
 
 def IJCA_model(hyperparams):
     """
-    Sequence to Sequence Weather Forecasting with Long
+    :param hyperparams: Set of hyperparameters
+    :return: A model based on Sequence to Sequence Weather Forecasting with Long
     Short-Term Memory Recurrent Neural Networks
 
     https://www.ijcaonline.org/archives/volume143/number11/zaytar-2016-ijca-910497.pdf
@@ -50,10 +58,10 @@ def IJCA_model(hyperparams):
 
 def Sentdex_model(hyperparams):
     """
-    Sequence to Sequence Weather Forecasting with Long
-    Short-Term Memory Recurrent Neural Networks
+    :param hyperparams: Set of hyperparameters
+    :return: A model based on RNN analysis of MNIST data by Sentdex
 
-    https://www.ijcaonline.org/archives/volume143/number11/zaytar-2016-ijca-910497.pdf
+    https://pythonprogramming.net/
     """
     model = Sequential()
 
@@ -72,11 +80,13 @@ def Sentdex_model(hyperparams):
     return model
 
 
+#  Not the best of ways but it'll do for switching models from hyperparams
 def add_LSTM(model=None, units=None, input_shape=None):
     model.add(
         LSTM(units=units,
             return_sequences=True, input_shape=input_shape))
     return model if not None else None
+
 
 def add_GRU(model=None, units=None, input_shape=None):
     model.add(
@@ -86,6 +96,13 @@ def add_GRU(model=None, units=None, input_shape=None):
 
 
 def loadModel(hyperparams=None, model_name="", in_shape=None, out_shape=None):
+    """
+    :param hyperparams: Set of hyperparameters
+    :param model_name: Needs to match one of the defined models
+    :param in_shape: input shape to pass on
+    :param out_shape: output shape to pass on
+    :return: A complete model of specified choice
+    """
     model = None
     if model_name == "tutorial_model":
         model = tutorial_model(hyperparams, in_shape=in_shape, out_shape=out_shape)

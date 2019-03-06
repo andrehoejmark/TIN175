@@ -7,7 +7,6 @@ def savePlotToFile(name, folder):
     plt.clf()
 
 
-
 def plot_comparison(start_idx, length=100, data=None, headers=None, hyperparams=None):
 
     """Plot the predicted and true output-signals."""
@@ -92,6 +91,15 @@ def plotColumn(header, y_axis_unit, rows, column_idx, cmd=None):
 
 
 def plot_training(y_label=None, train_loss=None, val_loss=None, title=None, sid=None, use_log=False):
+    """
+    :param y_label: y-axis label
+    :param train_loss: Data of the training loss
+    :param val_loss: Data of the validation loss
+    :param title: Title of plot
+    :param sid: Simulation ID to plot
+    :param use_log: Use log scale for y-axis
+    :return:
+    """
     plt.ylabel(y_label)
     if use_log:
         plt.yscale("log")
@@ -99,5 +107,9 @@ def plot_training(y_label=None, train_loss=None, val_loss=None, title=None, sid=
     plt.plot(val_loss, label="Validation loss")
     plt.title(title)
     plt.legend()
-    savePlotToFile("training_plot_%s" % sid, "./training_plots")
+    #  Storing plots in corresponding ID_{simulation id} folder
+    if use_log:
+        savePlotToFile("training_plot_%s_log" % sid, "./../simulation/ID_%s/" % sid)
+    else:
+        savePlotToFile("training_plot_%s" % sid, "./../simulation/ID_%s/" % sid)
     plt.clf()

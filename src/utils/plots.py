@@ -4,6 +4,7 @@ import numpy as np
 
 def savePlotToFile(name, folder):
     plt.savefig("%s/%s.png" % (folder, name), bbox_inches="tight")
+    plt.clf()
 
 
 
@@ -37,6 +38,7 @@ def plot_comparison(start_idx, length=100, data=None, headers=None, hyperparams=
         else:
             savePlotToFile("output_plot_%s%s" % (hyperparams.plot_output_sub_name, header),
                            hyperparams.output_folder)
+        plt.clf()
 
 def plot_multi_comparison(start_idx, length=100, datas=[], headers=None):
 
@@ -71,6 +73,7 @@ def plot_multi_comparison(start_idx, length=100, datas=[], headers=None):
         plt.ylabel(header)
         plt.legend()
         savePlotToFile("multi_graph.png", "./")
+        plt.clf()
 
 
 def plotColumn(header, y_axis_unit, rows, column_idx, cmd=None):
@@ -85,3 +88,16 @@ def plotColumn(header, y_axis_unit, rows, column_idx, cmd=None):
         plt.show()
     else:
         savePlotToFile("input_plot_%s" % header, "./")
+    plt.clf()
+
+
+def plot_training(y_label=None, train_loss=None, val_loss=None, title=None, sid=None, use_log=False):
+    plt.ylabel(y_label)
+    if use_log:
+        plt.yscale("log")
+    plt.plot(train_loss, label="Training loss")
+    plt.plot(val_loss, label="Validation loss")
+    plt.title(title)
+    plt.legend()
+    savePlotToFile("training_plot_%s" % sid, "./training_plots")
+    plt.clf()

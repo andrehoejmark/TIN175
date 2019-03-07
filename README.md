@@ -2,7 +2,7 @@
 Predicting temperature of city with weather data from nearby cities
 
 
-<u>André</u> <br><br>
+<b><u>André</u></b>
 
 Found and downloaded good csv files that we could combine to a dataset<br>
 
@@ -18,7 +18,7 @@ Report<br>
 - Further work<br><br><br>
 
 
-<u>Felix</u><br><br>
+<b><u>Felix</u><br></b>
 
 Preprocessing
 - Script to merge csv files
@@ -35,7 +35,7 @@ Report<br>
 - Results<br><br><br>
 
 
-<u> Rasmus </u><br><br>
+<b><u> Rasmus </u></b><br><br>
 Training<br>
 - Simulations/Training with LSTM, GRU <br>
 - Hyperparameter testing<br>
@@ -45,7 +45,7 @@ Report<br>
 - Method<br><br>
 
 
-<u> Edin </u> <br><br>
+<b><u> Edin </u> <br><br></b>
 Preprocessing
 - RNN network to replace missing data in dataset <br><br>
 
@@ -53,7 +53,7 @@ Training<br>
 - Simulations/Training with LSTM, GRU <br><br>
 
 
-<u> Jithin </u><br><br>
+<b><u> Jithin </u><br><br></b>
 Preprocessing <br>
 - What variables are the most important with linear regression <br><br>
 

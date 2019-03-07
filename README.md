@@ -70,7 +70,7 @@ Training
 - Simulations/Training with LSTM, GRU
 
 Report
-- Discussion
+- Discussion(ethical part)
 
 
 

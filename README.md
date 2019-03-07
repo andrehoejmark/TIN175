@@ -6,8 +6,6 @@ Predicting temperature of city with weather data from nearby cities<br><br><br><
 <h2> Indivual work/tasks </h2>
 
 <b>André</b><br><br>
-
-
 Preprocessing
 - Found and downloaded good csv files that we could combine to a dataset
 - Visualization of datasets to see which ones are good

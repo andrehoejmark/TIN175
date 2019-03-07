@@ -3,21 +3,21 @@ Predicting temperature of city with weather data from nearby cities<br><br><br><
 
 
 
-<h4> What we have done </h4>
+<h2> What we have done </h2>
 <b><u>André</u></b>
 
-Found and downloaded good csv files that we could combine to a dataset<br>
+Found and downloaded good csv files that we could combine to a dataset
 
-Preprocessing<br>
+Preprocessing
 - Visualization of datasets to see which ones are good
 - Searched and removed faulty values
 
-Training<br>
-- Simulations/training with LSTM, GRU<br><br>
+Training
+- Simulations/training with LSTM, GRU
 
-Report<br>
-- Background<br>
-- Further work<br><br><br>
+Report
+- Background
+- Further work
 
 
 <b><u>Felix</u><br></b>

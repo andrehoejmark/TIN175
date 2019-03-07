@@ -1,7 +1,9 @@
 # TIN175
-Predicting temperature of city with weather data from nearby cities
+Predicting temperature of city with weather data from nearby cities<br><br><br><br><br><br><br><br><br>
 
 
+
+<h4> What we have done </h4>
 <b><u>André</u></b>
 
 Found and downloaded good csv files that we could combine to a dataset<br>
@@ -22,10 +24,12 @@ Report<br>
 Preprocessing
 - Script to merge csv files
 - Liner interpolation
+
 Training<br>
 - Simulations/Training with LSTM, GRU <br>
 - Hyperparameter testing<br>
 - Plotting results with Tensorboard<br>\<br>
+
 Report<br>
 - Introduction<br>
 - Background<br>

@@ -21,6 +21,79 @@ Things to be tested <br>
 5. Compare LSTM and GRU network performance<br>
 
 
+<u>André</u> <br>\<br>
+
+Found and downloaded good csv files that we could combine to a dataset<br><br>
+
+Preprocessing<br>
+- Visualization of datasets to see which ones are good<br>
+- Searched and removed faulty values<br><br>
+
+Training<br>
+- Simulations/training with LSTM, GRU<br><br>
+
+Report<br>
+- Background<br>
+- Further work<br><br><br>
+
+
+<u>Felix</u><br><br>
+
+Preprocessing
+- Script to merge csv files
+- Liner interpolation
+
+Training<br>
+- Simulations/Training with LSTM, GRU <br>
+- Hyperparameter testing<br>
+- Plotting results with Tensorboard<br>\<br>
+
+Report<br>
+- Introduction<br>
+- Background<br>
+- Results<br><br><br>
+
+
+<u> Rasmus </u><br><br>
+Training<br>
+- Simulations/Training with LSTM, GRU <br>
+- Hyperparameter testing<br>
+- Plotting results with Tensorboard<br><br>
+
+Report<br>
+- Method<br><br>
+
+
+<u> Edin </u> <br><br>
+Preprocessing
+- RNN network to replace missing data in dataset <br><br>
+
+Training<br>
+- Simulations/Training with LSTM, GRU <br><br>
+
+
+<u> Jithin </u><br><br>
+Preprocessing <br>
+- What variables are the most important with linear regression <br><br>
+
+Training<br>
+- Simulations/Training with LSTM, GRU <br><br>
+
+Report<br>
+- Discussion
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <br><br><br><br><br><br>
 

@@ -56,6 +56,9 @@ Preprocessing
 Training<br>
 - Simulations/Training with LSTM, GRU
 
+Report
+- Structure
+
 <br><br>
 
 

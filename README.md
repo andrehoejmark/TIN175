@@ -19,16 +19,13 @@ Report<br>
 
 
 <b><u>Felix</u><br></b>
-
 Preprocessing
 - Script to merge csv files
 - Liner interpolation
-
 Training<br>
 - Simulations/Training with LSTM, GRU <br>
 - Hyperparameter testing<br>
 - Plotting results with Tensorboard<br>\<br>
-
 Report<br>
 - Introduction<br>
 - Background<br>

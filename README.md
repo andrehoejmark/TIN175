@@ -7,8 +7,8 @@ Predicting temperature of city with weather data from nearby cities
 Found and downloaded good csv files that we could combine to a dataset<br>
 
 Preprocessing<br>
-- Visualization of datasets to see which ones are good<br>
-- Searched and removed faulty values<br><br>
+- Visualization of datasets to see which ones are good
+- Searched and removed faulty values
 
 Training<br>
 - Simulations/training with LSTM, GRU<br><br>

@@ -5,10 +5,11 @@ Predicting temperature of city with weather data from nearby cities<br><br><br><
 
 <h2> Indivual work/tasks </h2>
 
-<b>André</b><br>
-Found and downloaded good csv files that we could combine to a dataset
+<b>André</b><br><br>
+
 
 Preprocessing
+- Found and downloaded good csv files that we could combine to a dataset
 - Visualization of datasets to see which ones are good
 - Searched and removed faulty values
 
@@ -21,7 +22,7 @@ Report
 
 <br><br>
 
-<b>Felix</b><br>
+<b>Felix</b><br><br>
 Preprocessing
 - Script to merge csv files
 - Liner interpolation
@@ -38,7 +39,7 @@ Report
 
 <br><br>
 
-<b>Rasmus</b><br>
+<b>Rasmus</b><br><br>
 Training
 - Simulations/Training with LSTM, GRU
 - Hyperparameter testing
@@ -50,14 +51,14 @@ Report
 <br><br>
 
 
-<b>Edin</b><br>
+<b>Edin</b><br><br>
 Preprocessing
 - RNN network to replace missing data in dataset
 
 Training<br>
 - Simulations/Training with LSTM, GRU
 
-<b>Jithin</b><br>
+<b>Jithin</b><br><br>
 Preprocessing
 - What variables are the most important with linear regression
 

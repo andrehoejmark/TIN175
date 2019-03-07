@@ -1,6 +1,6 @@
 import sys
 
-from src.utils.loadCSV import separateCSV
+from src.utils.loadCSV import separateCSV, deleteCSVColumn
 from tensorflow.python.keras.models import Sequential
 from tensorflow.python.keras.layers import Dense, GRU, LSTM
 from tensorflow.python.keras.optimizers import RMSprop
@@ -14,14 +14,24 @@ from src.utils.model import loadModel
 
 
 class SimulationData:
-    def __init__(self, hyperparams, headers=None, data=None):
+    def __init__(self, hyperparams, headers, data=None):
         hyperparams.getConfigString()
-        (smhi_in, smhi_out) = separateCSV(data, 6, len(headers))
+        START_COLUMN_IDX = 6
+        (smhi_in, smhi_out) = separateCSV(data, START_COLUMN_IDX, hyperparams.outputs)
+        i = len(smhi_out.header) - 1
+        while i >= 0:
+          print("Comaprint \"%s\" vs \"%s\" (%s)" % (smhi_out.header[i], headers, str(smhi_out.header[i] in headers)))
+          if not (smhi_out.header[i] in headers):
+            deleteCSVColumn(smhi_out, i)
+          i = i - 1
+        print("Size of %d" % len(smhi_out.header))
+        print("Size of row %d" % len(smhi_out.data[0]))
         self.id = "Data_" + hyperparams.plot_output_sub_name
         self.smhi_in = smhi_in
         self.smhi_out = smhi_out
         self.time_shift_hours = hyperparams.time_shift_in_hours
         self.training_split = hyperparams.training_splitting
+        self.loss_function = "mean_squared_error"
 
         # Perform time shift.
         smhi_out.shiftDataColumns(- self.time_shift_hours)
@@ -30,9 +40,12 @@ class SimulationData:
 
         # Transform date format
         self.in_values=smhi_in.valuesWithDate()
-        self.out_values=smhi_out.valuesWithoutDate()
+        # self.out_values=smhi_out.valuesWithoutDate()
+        self.out_values=smhi_out.values()
         self.num_in_signals = self.in_values.shape[1]
         self.num_out_signals = self.out_values.shape[1]
+
+        print("Num inputs: %d Num outputs: %d" % (self.num_in_signals, self.num_out_signals))
 
         self.model = None
 

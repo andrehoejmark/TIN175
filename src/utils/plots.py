@@ -65,13 +65,15 @@ def plot_multi_comparison(start_idx, length=100, datas=[], headers=None):
         signal_true = out_true[:, signal]
         plt.figure(figsize=(15, 5))
         plt.plot(signal_true, label='true')
+        idxn = 0
         for out in outs:
           signal_pred = out[:, signal]
-          plt.plot(signal_pred, label= "pred %s" % data.id )
+          plt.plot(signal_pred, label= "pred %s" % datas[idxn].id )
+          idxn = idxn + 1
         header = headers[signal]
         plt.ylabel(header)
         plt.legend()
-        savePlotToFile("multi_graph.png", "./")
+        savePlotToFile("multi graph - %s" % header, "./")
         plt.clf()
 
 

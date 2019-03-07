@@ -29,6 +29,8 @@ class ConfigCSV:
     for row in self.rows:
       if row[12] == str(nid):
         return Config(row)
+      elif row[0] == "STOP":
+        return None
     return None
 
 class smhiCSV:
@@ -66,6 +68,8 @@ class smhiCSV:
     for row in self.data:
       copy.append(row[2:])
     return numpy.array(copy)
+  def values(self):
+    return numpy.array(self.data)
 
 def toCellNum(n):
   if n is "-":
@@ -152,7 +156,16 @@ def separateCSV(smhi, frm, wid):
   smhi_a.header = smhi_a.header + smhi.header[to:end]
   for j in range(0, len(smhi.data)):
     smhi_a.data[j] = smhi_a.data[j] + smhi.data[j][to:end]
-  smhi_b.header = smhi.header[0:2] + smhi.header[frm:to]
+  # smhi_b.header = smhi.header[0:2] + smhi.header[frm:to]
+  smhi_b.header = smhi.header[frm:to]
   for row in smhi.data:
-    smhi_b.data.append(row[0:2] + row[frm:to])
+    #smhi_b.data.append(row[0:2] + row[frm:to])
+    smhi_b.data.append(row[frm:to])
   return (smhi_a, smhi_b)
+
+def deleteCSVColumn(smhi, idx):
+  print("DEL %d LEN %d" % (idx, len(smhi.header)))
+  smhi.header.pop(idx)
+  for row in smhi.data:
+    print(len(row))
+    row.pop(idx)

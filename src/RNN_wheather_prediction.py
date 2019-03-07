@@ -11,12 +11,12 @@ import numpy
 
 # Global parameters.
 
-DATASET_CSV_FILE="./utils/merged19982018.csv"
-CONFIG_LOCATION="./hyperparameters/hyperparameters.csv"
-LOADED_CONFIG_FILE=None
+DATASET_CSV_FILE = "./src/utils/merged_2018_medium.csv"
+CONFIG_LOCATION = "./src/hyperparameters.csv"
+LOADED_CONFIG_FILE = None
 
-OUTPUT_TARGET_HEADERS=["Gothenburg temperature", "Gothenburg wind direction", "Gothenburg wind speed",
-                       "Gothenburg pressure"]
+# OUTPUT_TARGET_HEADERS = ["gothenburg temperature", "gothenburg wind direction", "gothenburg wind speed", "gothenburg pressure"]
+OUTPUT_TARGET_HEADERS = ["gothenburg temperature"]
 
 NUM_TARGET_COLUMNS=len(OUTPUT_TARGET_HEADERS)
 
@@ -25,43 +25,49 @@ def loadConfigFile(name):
     global LOADED_CONFIG_FILE
     LOADED_CONFIG_FILE=loadConfigCSV(CONFIG_LOCATION)
 
-def genCompareGraphs():
+def genCompareGraphs(ids, names):
   if LOADED_CONFIG_FILE:
-        cid = 0
-        conf = None
-        nets = []
-        while True:
-            conf = LOADED_CONFIG_FILE.getConfig(cid)
-            if conf:
-                hyperparams = convConfigToHyperparams(conf)
-                if not os.path.isdir(hyperparams.output_folder):
-                  try:
-                    os.mkdir(hyperparams.output_folder)
-                  except OSError:
-                     print("Unable to create output folder \"%s\" (you might have to remove the old folder)" % hyperparams.output_folder)
-                     sys.exit(1)
-                hyperparams.output_folder = hyperparams.output_folder + ("ID_%s/" % conf.id)
-                if not os.path.isdir(hyperparams.output_folder):
-                  try:
-                    os.mkdir(hyperparams.output_folder)
-                  except OSError:
-                     print("Unable to create modified id output folder \"%s\" (you might have to remove the old files)" % hyperparams.output_folder)
-                     sys.exit(1)
-                net = SimulationData(hyperparams, headers = OUTPUT_TARGET_HEADERS, data = data)
-                net.splitAndNormalize()
-                net.createValidationData()
-                net.setupAndPerformSimulation(hyperparams)
+      cid = 0
+      conf = None
+      nets = []
+      net_len = 500
+      while True:
+          conf = LOADED_CONFIG_FILE.getConfig(cid)
+          if conf:
+              ocid = cid
+              cid = cid + 1
+              if not (str(ocid) in ids):
+                  continue
+              hyperparams = convConfigToHyperparams(conf)
+              if not os.path.isdir(hyperparams.output_folder):
                 try:
-                    net.model.load_weights(net.path_checkpoint)
-                except Exception as error:
-                    print("Error trying to load checkpoint: %s" % error)
-                    return False
-                nets.append(net)
-                cid = cid + 1
-            else:
-                print("Ended config run at cid: %d" % cid)
-                break
-        plot_multi_comparison(start_idx=0, length=480, datas=nets, headers=OUTPUT_TARGET_HEADERS)
+                  os.mkdir(hyperparams.output_folder)
+                except OSError:
+                   print("Unable to create output folder \"%s\" (you might have to remove the old folder)" % hyperparams.output_folder)
+                   sys.exit(1)
+              hyperparams.output_folder = hyperparams.output_folder + ("ID_%s/" % conf.id)
+              if not os.path.isdir(hyperparams.output_folder):
+                try:
+                  os.mkdir(hyperparams.output_folder)
+                except OSError:
+                   print("Unable to create modified id output folder \"%s\" (you might have to remove the old files)" % hyperparams.output_folder)
+                   sys.exit(1)
+              net = SimulationData(hyperparams, OUTPUT_TARGET_HEADERS, data = data)
+              net.splitAndNormalize()
+              net.createValidationData()
+              net.setupAndPerformSimulation(hyperparams)
+              net_len = net.num_train
+              net.id = names[str(ocid)]
+              try:
+                  net.model.load_weights(net.path_checkpoint)
+              except Exception as error:
+                  print("Error trying to load checkpoint: %s" % error)
+                  return False
+              nets.append(net)
+          else:
+              print("Ended config run at cid: %d" % cid)
+              break
+      plot_multi_comparison(start_idx=0, length=net_len, datas=nets, headers=OUTPUT_TARGET_HEADERS)
   else:
       print("No config CSV file has been loaded.")
       return False
@@ -121,9 +127,9 @@ def printHelp(cmd="null"):
 def performSimulation(cmd="", hyperparams=None, data=None):
     """Comments"""
     global OUTPUT_TARGET_HEADERS
-    OUTPUT_TARGET_HEADERS = OUTPUT_TARGET_HEADERS[:hyperparams.outputs]
+    # OUTPUT_TARGET_HEADERS = OUTPUT_TARGET_HEADERS[:hyperparams.outputs]
 
-    data=SimulationData(hyperparams, headers=OUTPUT_TARGET_HEADERS, data=data)
+    data=SimulationData(hyperparams, OUTPUT_TARGET_HEADERS, data=data)
 
     # Parse command.
     if cmd=="view_input_plots" or cmd=="save_input_plots":
@@ -179,9 +185,22 @@ while True:
         break
     elif cmd=="help":
         printHelp(cmd=cmd)
-    elif cmd == "agg":
-        loadConfigFile(CONFIG_LOCATION)
-        genCompareGraphs()
+    elif cmd[0:3] == "agg":
+        args = cmd[4:]
+        if args:
+          loadConfigFile(CONFIG_LOCATION)
+          pairs = args.split(" ")
+          ids = []
+          names = {}
+          print(pairs)
+          for pair in pairs:
+            print(pair.split(","))
+            [id, name] = pair.split(",")
+            ids.append(id)
+            names[id] = name
+          genCompareGraphs(ids, names)
+        else:
+          print("Missing which pairs \"id,name\"")
     elif cmd == "run_config":
         loadConfigFile(CONFIG_LOCATION)
         runConfigs()

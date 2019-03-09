@@ -64,13 +64,13 @@ Report
 
 <b>Jithin</b><br><br>
 Preprocessing
-- What variables are the most important with linear regression
+- What variables are the most important with Granger Causality
 
 Training
 - Simulations/Training with LSTM, GRU
 
 Report
-- Discussion(ethical part)
+- Discussion(ethical part, data)
 
 
 

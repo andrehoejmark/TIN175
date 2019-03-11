@@ -18,6 +18,9 @@ class SimulationData:
         hyperparams.getConfigString()
         START_COLUMN_IDX = 6
         (smhi_in, smhi_out) = separateCSV(data, START_COLUMN_IDX, hyperparams.outputs)
+        if hyperparams.keep_city_as_input:
+          smhi_in = data
+        smhi_in.use_full_timestamp = hyperparams.use_full_timestamp
         i = len(smhi_out.header) - 1
         while i >= 0:
           print("Comaprint \"%s\" vs \"%s\" (%s)" % (smhi_out.header[i], headers, str(smhi_out.header[i] in headers)))

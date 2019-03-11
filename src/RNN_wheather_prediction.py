@@ -205,4 +205,6 @@ while True:
         loadConfigFile(CONFIG_LOCATION)
         runConfigs()
     else:
-        performSimulation(cmd=cmd, hyperparams=NetowrkHyperparameterConfig(), data=data)
+        conf = NetowrkHyperparameterConfig()
+        conf.keep_city_as_input = True # Remove (or set to 'False') ths line in order to not depend on the non-timeshifted output signals as input.
+        performSimulation(cmd=cmd, hyperparams=conf, data=data)

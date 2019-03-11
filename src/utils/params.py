@@ -19,6 +19,8 @@ class NetowrkHyperparameterConfig:
         self.output_folder = "simulation/"
         self.plot_output_sub_name = ""
         self.outputs = 4
+        self.use_full_timestamp = True
+        self.keep_city_as_input = False
 
     def getConfigString(self):
         return ("""
@@ -41,14 +43,17 @@ Read batch size = %d
 Network type = %s
 Output folder = %s
 Plot output sub name = %s
-outputs = %d
+Num outputs = %d (deprecated)
+Use full timestamp : %s
+Use city as input : %s
 """ % (self.read_sequence_length, self.start_learning_rate, self.loss_factor, self.min_learning_rate,
        self.learning_patience,
        self.num_epochs, self.steps_per_epoch, self.early_stop_patience, self.warmup_steps,
        self.num_gated_reoccurring_units,
        self.activation_function, self.time_shift_in_hours, self.training_splitting, self.show_output_after_sim,
        self.read_batch_size,
-       self.network_type, self.output_folder, self.plot_output_sub_name, self.outputs))
+       self.network_type, self.output_folder, self.plot_output_sub_name, self.outputs,
+       str(self.use_full_timestamp), str(self.keep_city_as_input)))
 
 
 def convConfigToHyperparams(conf):

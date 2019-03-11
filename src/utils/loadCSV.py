@@ -34,9 +34,10 @@ class ConfigCSV:
     return None
 
 class smhiCSV:
-  def __init__(self):
+  def __init__(self, use_full_timestamp=True):
     self.header = []
     self.data = []
+    self.use_full_timestamp = use_full_timestamp
   def shiftDataColumns(self, steps):
     copy = self.data[:]
     l = len(copy)
@@ -59,9 +60,14 @@ class smhiCSV:
     for row in self.data:
       date = row[0].split("-")
       time = row[1].split(":")
-      copy.append(
-        [int(date[0]), int(date[1]), int(date[2])] +
-        [int(time[0]), int(time[1]), int(time[2])] + row[2:])
+      if self.use_full_timestamp:
+        copy.append(
+          [int(date[0]), int(date[1]), int(date[2])] +
+          [int(time[0]), int(time[1]), int(time[2])] + row[2:])
+      else:
+        copy.append(
+          [int(date[1]), int(date[2])] +
+          [int(time[0])] + row[2:])
     return numpy.array(copy)
   def valuesWithoutDate(self):
     copy = []

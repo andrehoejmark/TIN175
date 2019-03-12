@@ -1,6 +1,6 @@
 Granger Causality Tests:
 
-Data from 20191129 14:00 to 20181118 03:00
+Data from 20061129 14:00 to 20181118 03:00
 Test for Lag selection, viz, AKAIKE Information criteria (AIC)
 We reject the Null Hypothesis, if the p-value is less than 0.05 (95% confidence interval)
 

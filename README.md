@@ -51,6 +51,7 @@ Report
 
 <b>Edin</b><br><br>
 Preprocessing
+- Find ways to replace missing data in the dataset
 - RNN network to replace missing data in dataset
 
 Training<br>
@@ -58,6 +59,12 @@ Training<br>
 
 Report
 - Structure
+- Introduction
+- Background
+
+Presentation
+- Make the PowerPoint
+
 
 <br><br>
 

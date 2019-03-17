@@ -11,12 +11,12 @@ import numpy
 
 # Global parameters.
 
-DATASET_CSV_FILE = "./src/utils/merged_2018_medium.csv"
-CONFIG_LOCATION = "./src/hyperparameters.csv"
+DATASET_CSV_FILE = "./utils/wheather-data-1998-2018.csv"
+CONFIG_LOCATION = "hyperparameters.csv"
 LOADED_CONFIG_FILE = None
 
 # OUTPUT_TARGET_HEADERS = ["gothenburg temperature", "gothenburg wind direction", "gothenburg wind speed", "gothenburg pressure"]
-OUTPUT_TARGET_HEADERS = ["gothenburg temperature"]
+OUTPUT_TARGET_HEADERS=["gothenburg temperature"]
 
 NUM_TARGET_COLUMNS=len(OUTPUT_TARGET_HEADERS)
 
@@ -25,53 +25,57 @@ def loadConfigFile(name):
     global LOADED_CONFIG_FILE
     LOADED_CONFIG_FILE=loadConfigCSV(CONFIG_LOCATION)
 
+
 def genCompareGraphs(ids, names):
-  if LOADED_CONFIG_FILE:
-      cid = 0
-      conf = None
-      nets = []
-      net_len = 500
-      while True:
-          conf = LOADED_CONFIG_FILE.getConfig(cid)
-          if conf:
-              ocid = cid
-              cid = cid + 1
-              if not (str(ocid) in ids):
-                  continue
-              hyperparams = convConfigToHyperparams(conf)
-              if not os.path.isdir(hyperparams.output_folder):
+    if LOADED_CONFIG_FILE:
+        cid=0
+        conf=None
+        nets=[]
+        net_len=500
+        while True:
+            conf=LOADED_CONFIG_FILE.getConfig(cid)
+            if conf:
+                ocid=cid
+                cid=cid + 1
+                if not (str(ocid) in ids):
+                    continue
+                hyperparams=convConfigToHyperparams(conf)
+                if not os.path.isdir(hyperparams.output_folder):
+                    try:
+                        os.mkdir(hyperparams.output_folder)
+                    except OSError:
+                        print(
+                            "Unable to create output folder \"%s\" (you might have to remove the old folder)"%hyperparams.output_folder)
+                        sys.exit(1)
+                hyperparams.output_folder=hyperparams.output_folder + ("ID_%s/"%conf.id)
+                if not os.path.isdir(hyperparams.output_folder):
+                    try:
+                        os.mkdir(hyperparams.output_folder)
+                    except OSError:
+                        print(
+                            "Unable to create modified id output folder \"%s\" (you might have to remove the old files)"%hyperparams.output_folder)
+                        sys.exit(1)
+                net=SimulationData(hyperparams, OUTPUT_TARGET_HEADERS, data=data)
+                net.splitAndNormalize()
+                net.createValidationData()
+                net.setupAndPerformSimulation(hyperparams)
+                net_len=net.num_train
+                net.id=names[str(ocid)]
                 try:
-                  os.mkdir(hyperparams.output_folder)
-                except OSError:
-                   print("Unable to create output folder \"%s\" (you might have to remove the old folder)" % hyperparams.output_folder)
-                   sys.exit(1)
-              hyperparams.output_folder = hyperparams.output_folder + ("ID_%s/" % conf.id)
-              if not os.path.isdir(hyperparams.output_folder):
-                try:
-                  os.mkdir(hyperparams.output_folder)
-                except OSError:
-                   print("Unable to create modified id output folder \"%s\" (you might have to remove the old files)" % hyperparams.output_folder)
-                   sys.exit(1)
-              net = SimulationData(hyperparams, OUTPUT_TARGET_HEADERS, data = data)
-              net.splitAndNormalize()
-              net.createValidationData()
-              net.setupAndPerformSimulation(hyperparams)
-              net_len = net.num_train
-              net.id = names[str(ocid)]
-              try:
-                  net.model.load_weights(net.path_checkpoint)
-              except Exception as error:
-                  print("Error trying to load checkpoint: %s" % error)
-                  return False
-              nets.append(net)
-          else:
-              print("Ended config run at cid: %d" % cid)
-              break
-      plot_multi_comparison(start_idx=0, length=net_len, datas=nets, headers=OUTPUT_TARGET_HEADERS)
-  else:
-      print("No config CSV file has been loaded.")
-      return False
-  return True
+                    net.model.load_weights(net.path_checkpoint)
+                except Exception as error:
+                    print("Error trying to load checkpoint: %s"%error)
+                    return False
+                nets.append(net)
+            else:
+                print("Ended config run at cid: %d"%cid)
+                break
+        plot_multi_comparison(start_idx=0, length=net_len, datas=nets, headers=OUTPUT_TARGET_HEADERS)
+    else:
+        print("No config CSV file has been loaded.")
+        return False
+    return True
+
 
 def runConfigs():
     if LOADED_CONFIG_FILE:
@@ -86,14 +90,16 @@ def runConfigs():
                     try:
                         os.mkdir(hyperparams.output_folder)
                     except OSError:
-                        print("Unable to create output folder \"%s\" (you might have to remove the old folder)"%hyperparams.output_folder)
+                        print(
+                            "Unable to create output folder \"%s\" (you might have to remove the old folder)"%hyperparams.output_folder)
                         sys.exit(1)
                 hyperparams.output_folder=hyperparams.output_folder + ("ID_%s/"%conf.id)
                 if not os.path.isdir(hyperparams.output_folder):
                     try:
                         os.mkdir(hyperparams.output_folder)
                     except OSError:
-                        print("Unable to create modified id output folder \"%s\" (you might have to remove the old files)"%hyperparams.output_folder)
+                        print(
+                            "Unable to create modified id output folder \"%s\" (you might have to remove the old files)"%hyperparams.output_folder)
                         sys.exit(1)
                     hyperparams.show_output_after_sim=False
                     # Print config to file
@@ -102,11 +108,11 @@ def runConfigs():
                     file_object.write(conf_str + "\n")
                     file_object.flush()
                     file_object.close()
-                    print(conf_str)
                     performSimulation(cmd="simulate", hyperparams=hyperparams, data=data)
                 else:
-                    print("!! \n\nWARNING: SKIPPING ID %s (iteration %d) AS THE LAST SIMULATION FILES ARE STILL FOUND! PLEASE MOVE THEM AND KEEP THEM SAFE! \n\n!!"%(
-                        conf.id, cid))
+                    print(
+                        "!! \n\nWARNING: SKIPPING ID %s (iteration %d) AS THE LAST SIMULATION FILES ARE STILL FOUND! PLEASE MOVE THEM AND KEEP THEM SAFE! \n\n!!"%(
+                            conf.id, cid))
                 cid=cid + 1
 
             else:
@@ -120,7 +126,8 @@ def runConfigs():
 
 
 def printHelp(cmd="null"):
-    print("Dunno what \"{cmd}\" is. You can use 'view_input_plots', 'save_input_plots', 'run_config' or 'simulate' at the "
+    print(
+        "Dunno what \"{cmd}\" is. You can use 'view_input_plots', 'save_input_plots', 'run_config' or 'simulate' at the "
         "moment.".format(cmd=cmd))
 
 
@@ -158,7 +165,7 @@ def performSimulation(cmd="", hyperparams=None, data=None):
         print("loss (test-set):", result)
 
         # Render comparison graphs.
-        plot_comparison(0, length=(24*365), data=data, headers=OUTPUT_TARGET_HEADERS, hyperparams=hyperparams)
+        plot_comparison(0, length=(24*60), data=data, headers=OUTPUT_TARGET_HEADERS, hyperparams=hyperparams)
     else:
         printHelp(cmd=cmd)
         return False
@@ -167,7 +174,7 @@ def performSimulation(cmd="", hyperparams=None, data=None):
 
 
 """
- 
+
 Actual program loop
 
 """
@@ -185,26 +192,26 @@ while True:
         break
     elif cmd=="help":
         printHelp(cmd=cmd)
-    elif cmd[0:3] == "agg":
-        args = cmd[4:]
+    elif cmd[0:3]=="agg":
+        args=cmd[4:]
         if args:
-          loadConfigFile(CONFIG_LOCATION)
-          pairs = args.split(" ")
-          ids = []
-          names = {}
-          print(pairs)
-          for pair in pairs:
-            print(pair.split(","))
-            [id, name] = pair.split(",")
-            ids.append(id)
-            names[id] = name
-          genCompareGraphs(ids, names)
+            loadConfigFile(CONFIG_LOCATION)
+            pairs=args.split(" ")
+            ids=[]
+            names={}
+            print(pairs)
+            for pair in pairs:
+                print(pair.split(","))
+                [id, name]=pair.split(",")
+                ids.append(id)
+                names[id]=name
+            genCompareGraphs(ids, names)
         else:
-          print("Missing which pairs \"id,name\"")
-    elif cmd == "run_config":
+            print("Missing which pairs \"id,name\"")
+    elif cmd=="run_config":
         loadConfigFile(CONFIG_LOCATION)
         runConfigs()
     else:
-        conf = NetowrkHyperparameterConfig()
-        conf.keep_city_as_input = True # Remove (or set to 'False') ths line in order to not depend on the non-timeshifted output signals as input.
+        conf=NetowrkHyperparameterConfig()
+        conf.keep_city_as_input=True  # Remove (or set to 'False') ths line in order to not depend on the non-timeshifted output signals as input.
         performSimulation(cmd=cmd, hyperparams=conf, data=data)

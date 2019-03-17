@@ -1,7 +1,7 @@
 import os
 import tensorflow as tf
 import numpy as np
-from src.utils.plots import plot_training
+from src.utils.plots import plot_training, train_comparison, plot_double_csv
 
 ###########################################################
 #  Function to extract all tensorflow data and
@@ -11,8 +11,6 @@ from src.utils.plots import plot_training
 #  Path separated for dynamic input Simulation IDs
 path_base_dir = "../simulation/ID_"
 path_ending_dir = "/keras_logs/"
-NO_OF_SIMULATIONS_TO_READ = 52
-USE_LOG_SCALE = False
 
 
 def extract_tf_log(path="", tag=""):
@@ -31,13 +29,50 @@ def extract_tf_log(path="", tag=""):
     return np.array(data) if data is not None else None
 
 
-#  Loop through all the Simulation IDs and plot/save the returned data
-for sid in range(NO_OF_SIMULATIONS_TO_READ):
-    file_path = path_base_dir + str(sid) + path_ending_dir
-    file_name = os.listdir(file_path)[0]  # Not so nice but for our current setup this is fine with single files in dirs
-    plot_training(y_label="[Loss, %]",
-                          train_loss=extract_tf_log(path=file_path + file_name, tag="epoch_loss"),
-                          val_loss=extract_tf_log(path=file_path + file_name, tag="epoch_val_loss"),
-                          title="Training metrics for plot %s"%str(sid),
-                          sid=str(sid),
-                          use_log=USE_LOG_SCALE)
+def add_training_plots(no_of_simulations=0, log=False):
+    """
+    Loops through all the (specified) Simulation IDs and creates plots in the specified number of simulation ID folders.
+    :param no_of_simulations: No. of simulations to iterate over. Only supports operations from 0 to val.
+    """
+    for sid in range(no_of_simulations):
+        file_path = path_base_dir + str(sid) + path_ending_dir
+        file_name = os.listdir(file_path)[0]  # Not so nice but for our current setup this is fine with single files in dirs
+        train_loss = extract_tf_log(path=file_path + file_name, tag="epoch_loss")
+        val_loss = extract_tf_log(path=file_path + file_name, tag="epoch_val_loss")
+        #  y_smooth=spline(x, y, x_smooth)
+        plot_training(y_label="[Loss, %]",
+                              train_loss=train_loss,
+                              val_loss=val_loss,
+                              sid=str(sid),
+                              use_log=log)
+
+
+def multi_training_plot(plot_id_a=None, plot_id_b=None):
+    file_path_a = path_base_dir + str(plot_id_a) + path_ending_dir
+    file_path_b = path_base_dir + str(plot_id_b) + path_ending_dir
+    file_name_a = os.listdir(file_path_a)[0]
+    file_name_b = os.listdir(file_path_b)[0]  # Not so nice and definitely not scaling
+    train_comparison(y_label="Loss",
+                  train_loss_a=extract_tf_log(path=file_path_a + file_name_a, tag="epoch_loss"),
+                  val_loss_a=extract_tf_log(path=file_path_a + file_name_a, tag="epoch_val_loss"),
+                  train_loss_b=extract_tf_log(path=file_path_b + file_name_b, tag="epoch_loss"),
+                  val_loss_b=extract_tf_log(path=file_path_b + file_name_b, tag="epoch_val_loss"),
+                  title="")
+
+
+def extract_scores(no_of_simulations):
+    data = []
+    for sid in range(no_of_simulations):
+        file_path = path_base_dir + str(sid) + path_ending_dir
+        file_name = os.listdir(file_path)[0]
+        data.append(np.min(extract_tf_log(path=file_path + file_name, tag="epoch_val_loss")))
+        np.savetxt("train_loss_summary.csv", np.array(data), delimiter=",")
+        np.savetxt("train_loss_summary_sorted.csv", np.sort(np.array(data)), delimiter=",")
+
+##########################################
+
+
+#multi_training_plot(3, 2)
+#extract_scores(6)
+#add_training_plots(6, log=True)
+plot_double_csv(length=772)

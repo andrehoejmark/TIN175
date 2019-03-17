@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import matplotlib
 import numpy as np
 
 
@@ -7,17 +8,20 @@ def savePlotToFile(name, folder):
     plt.clf()
 
 
-def plot_comparison(start_idx, length=100, data=None, headers=None, hyperparams=None):
+def plot_comparison_cpy(start_idx, length=100, data=None, headers=None, hyperparams=None):
 
     """Plot the predicted and true output-signals."""
 
-    inp = data.in_train_scaled
-    out_true = data.out_train
+    inp = data.in_val_scaled
+    out_true = data.out_val
+
+    inp2 = data.out_train
 
     end_idx = len(inp)
     inp = inp[(end_idx-length):end_idx]
 
     out_true = out_true[(end_idx-length):end_idx]
+    out_actual = data.out_values[(end_idx-length):end_idx]
     inp = np.expand_dims(inp, axis=0)
 
     out_pred = data.model.predict(inp)
@@ -29,6 +33,8 @@ def plot_comparison(start_idx, length=100, data=None, headers=None, hyperparams=
         plt.figure(figsize=(15, 5))
         plt.plot(signal_true, label='true')
         plt.plot(signal_pred, label='pred')
+        plt.plot(out_actual, label='out_actual')
+        plt.plot()
         header = headers[signal]
         plt.ylabel(header)
         plt.legend()
@@ -37,7 +43,45 @@ def plot_comparison(start_idx, length=100, data=None, headers=None, hyperparams=
         else:
             savePlotToFile("output_plot_%s%s" % (hyperparams.plot_output_sub_name, header),
                            hyperparams.output_folder)
+        np.savetxt(hyperparams.output_folder + "out_pred_72.csv", signal_pred[:, signal], delimiter=",")
+        np.savetxt(hyperparams.output_folder + "out_true_72.csv", signal_true[:, signal], delimiter=",")
         plt.clf()
+
+
+def plot_comparison(start_idx, length=100, data=None, headers=None, hyperparams=None):
+
+    """Plot the predicted and true output-signals."""
+
+    inp=data.in_val_scaled
+    out_true=data.out_val
+
+    end_idx=len(inp)
+    inp=inp[(end_idx - length):end_idx]
+
+    out_true=out_true[(end_idx - length):end_idx]
+    inp=np.expand_dims(inp, axis=0)
+
+    out_pred=data.model.predict(inp)
+    out_pred_rescaled=data.out_scaler.inverse_transform(out_pred[0])
+
+    for signal in range(0, len(headers)):
+        signal_pred=out_pred_rescaled[:, signal]
+        signal_true=out_true[:, signal]
+        plt.figure(figsize=(15, 5))
+        plt.plot(signal_true, label='true')
+        plt.plot(signal_pred, label='pred')
+        header=headers[signal]
+        plt.ylabel(header)
+        plt.legend()
+        if hyperparams.show_output_after_sim:
+            plt.show()
+        else:
+            savePlotToFile("output_plot_%s%s"%(hyperparams.plot_output_sub_name, header),
+                           hyperparams.output_folder)
+            np.savetxt(hyperparams.output_folder + "out_pred_72.csv", signal_pred, delimiter=",")
+            np.savetxt(hyperparams.output_folder + "out_true_72.csv", signal_true, delimiter=",")
+        plt.clf()
+
 
 def plot_multi_comparison(start_idx, length=100, datas=[], headers=None):
 
@@ -92,7 +136,7 @@ def plotColumn(header, y_axis_unit, rows, column_idx, cmd=None):
     plt.clf()
 
 
-def plot_training(y_label=None, train_loss=None, val_loss=None, title=None, sid=None, use_log=False):
+def plot_training(y_label=None, train_loss=None, val_loss=None, title="", sid=None, use_log=False):
     """
     :param y_label: y-axis label
     :param train_loss: Data of the training loss
@@ -103,6 +147,7 @@ def plot_training(y_label=None, train_loss=None, val_loss=None, title=None, sid=
     :return:
     """
     plt.ylabel(y_label)
+    plt.xlabel("Epoch")
     if use_log:
         plt.yscale("log")
     plt.plot(train_loss, label="Training loss")
@@ -114,4 +159,60 @@ def plot_training(y_label=None, train_loss=None, val_loss=None, title=None, sid=
         savePlotToFile("training_plot_%s_log" % sid, "./../simulation/ID_%s/" % sid)
     else:
         savePlotToFile("training_plot_%s" % sid, "./../simulation/ID_%s/" % sid)
+    plt.clf()
+
+
+def plot_double_csv(length=100):
+
+    true_24=np.genfromtxt("out_pred_lstm.csv", delimiter=",")
+    pred_24=np.genfromtxt("out_true_lstm.csv", delimiter=",")
+    true_72=np.genfromtxt("out_pred_gru.csv", delimiter=",")
+    pred_72=np.genfromtxt("out_true_gru.csv", delimiter=",")
+
+    matplotlib.rc('font', size=20)
+    #matplotlib.rc('axes', titlesize=18)
+    plt.figure(figsize=(18, 6))
+    #fig, ax = plt.subplots(1, 1, sharex = True)
+
+
+    #ax[0].plot(true_24[100:length], label="true")
+    #ax[0].plot(pred_24[100:length], label="predicted")
+    #ax[0].legend()
+
+    plt.plot(true_24[100:length], label="true")
+    plt.plot(pred_24[100:length], label="predicted")
+    plt.legend()
+    #ax[1].plot(true_72[100:length])
+    #ax[1].plot(pred_72[100:length])
+
+
+    plt.ylabel("Temperature (°C)")
+    #ax[1].set_ylabel("GRU")
+    plt.xlabel("Hours")
+    # plt.subplots_adjust(hspace=0)
+    savePlotToFile("pred_plot", ".")
+    plt.clf()
+
+
+def train_comparison(y_label=None, train_loss_a=None, val_loss_a=None, train_loss_b=None, val_loss_b=None,
+                     title=None):
+
+    matplotlib.rc('font', size=14)
+    plt.figure(figsize=(15, 5))
+    fig, ax=plt.subplots(2, 1, sharex=True, figsize=(10,5))
+
+    ax[0].plot(train_loss_a, label="LSTM")
+    ax[0].plot(train_loss_b, label="GRU")
+    ax[0].legend()
+    ax[1].plot(val_loss_a)
+    ax[1].plot(val_loss_b)
+
+    ax[0].set_ylabel("Training " + y_label)
+    ax[1].set_ylabel("Validation " + y_label)
+    ax[1].set_xlabel("Epoch")
+    ax[0].set_yscale("log")
+    ax[1].set_yscale("log")
+    ax[0].set_title(title)
+    plt.subplots_adjust(hspace=0)
+    savePlotToFile("Comparison plot", ".")
     plt.clf()

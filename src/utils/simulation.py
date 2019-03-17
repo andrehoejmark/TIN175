@@ -34,17 +34,18 @@ class SimulationData:
         self.smhi_out = smhi_out
         self.time_shift_hours = hyperparams.time_shift_in_hours
         self.training_split = hyperparams.training_splitting
-        self.loss_function = "mean_squared_error"
+        self.loss_function = "mse"
 
         # Perform time shift.
-        smhi_out.shiftDataColumns(- self.time_shift_hours)
-        smhi_in.drop(self.time_shift_hours)
-        smhi_out.pop(self.time_shift_hours)
+        self.smhi_out.shiftDataColumns(- self.time_shift_hours)
+        self.smhi_in.drop(self.time_shift_hours)
+        self.smhi_out.pop(self.time_shift_hours)
+
 
         # Transform date format
-        self.in_values=smhi_in.valuesWithDate()
-        # self.out_values=smhi_out.valuesWithoutDate()
-        self.out_values=smhi_out.values()
+        self.in_values=self.smhi_in.valuesWithDate()
+        #  self.out_values=smhi_out.valuesWithoutDate()
+        self.out_values=self.smhi_out.values()
         self.num_in_signals = self.in_values.shape[1]
         self.num_out_signals = self.out_values.shape[1]
 
@@ -54,16 +55,24 @@ class SimulationData:
 
     def splitAndNormalize(self):
         self.num_train=int(len(self.in_values)*self.training_split)
+        val_len = 720
         self.in_train=self.in_values[0:self.num_train]
-        self.in_test=self.in_values[self.num_train:]
+        self.in_test=self.in_values[self.num_train:-val_len]
+        self.in_val=self.in_values[-val_len:]
+
         self.out_train=self.out_values[0:self.num_train]
-        self.out_test=self.out_values[self.num_train:]
+        self.out_test=self.out_values[self.num_train:-val_len]
+        self.out_val=self.out_values[-val_len:]
+
         self.in_scaler=MinMaxScaler()
         self.in_train_scaled=self.in_scaler.fit_transform(self.in_train)
         self.in_test_scaled=self.in_scaler.transform(self.in_test)
+        self.in_val_scaled=self.in_scaler.transform(self.in_val)
         self.out_scaler=MinMaxScaler()
         self.out_train_scaled=self.out_scaler.fit_transform(self.out_train)
         self.out_test_scaled=self.out_scaler.transform(self.out_test)
+        self.out_val_scaled=self.out_scaler.transform(self.out_val)
+
 
 
     def createValidationData(self):
@@ -74,7 +83,7 @@ class SimulationData:
 
     def getBatchGenerator(self, hyperparams):
         batch_size=hyperparams.read_batch_size
-        sequence_length=hyperparams.read_sequence_length
+        sequence_length=336  #  hyperparams.read_sequence_length
         while True:
             in_shape=(batch_size, sequence_length, self.num_in_signals)
             in_batch=numpy.zeros(shape=in_shape, dtype=numpy.float16)
@@ -90,7 +99,7 @@ class SimulationData:
 
 
     def lossMSEWarmup(self, out_true, out_pred):
-        "Calculate the Mean Squared Error"
+        #  "Calculate the Mean Squared Error"
         out_true_slice=out_true[:, self.warmup_steps:, :]
         out_pred_slice=out_pred[:, self.warmup_steps:, :]
         self.loss=tensorflow.losses.mean_squared_error(labels=out_true_slice, predictions=out_pred_slice)

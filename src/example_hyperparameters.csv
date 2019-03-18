@@ -1,0 +1,7 @@
+"Time shift in hours";"Training split";"Start learning rate";"Loss factor";"Min learning rate";"Learning patience";"Num epochs";"Steps per epoch";"Early stop patience";"Warmup steps";"Num gated reoccurring units";"Activation function";"ID";"Loss";"Network type";"Batch size";"Outputs"
+6;0.8;0.0001;0.1;0.00001;3;30;32;10;0;512;"tanh";0;"TBA";"GRU";12;1
+6;0.8;0.0001;0.1;0.00001;3;30;32;10;0;512;"tanh";1;"TBA";"LSTM";12;1
+6;0.8;0.0001;0.1;0.00001;5;50;50;15;0;512;"tanh";2;"TBA";"GRU";12;1
+6;0.8;0.0001;0.1;0.00001;5;50;50;15;0;512;"tanh";3;"TBA";"LSTM";12;1
+6;0.8;0.0001;0.1;0.00001;10;100;20;25;0;512;"tanh";4;"TBA";"GRU";12;1
+6;0.8;0.0001;0.1;0.00001;10;100;20;25;0;512;"tanh";5;"TBA";"LSTM";12;1

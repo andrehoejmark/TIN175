@@ -1,3 +1,15 @@
+
+#
+# Author: Felix Hulthén.
+#
+
+#
+# Note: This is a stand alone program for merging SMHI CSV datasets into an aligned dataset.
+# It is a bit complex to use, but you can run the script with the --help flag to get more information
+# about how to use it. Also note that if you use large datasets it can take a couple of minutes to
+# complete the merge (you will get a progress bar of sorts to get a feel for how long it will take)..
+#
+
 """
 This script requires Python 3.X or later in order to run.
 
@@ -19,6 +31,12 @@ MIN_TIME = "0001-01-01"
 MAX_TIME = "9999-12-31"
 
 def readCSV(name, wid = 3, max_len = 500000, is_multi = False):
+  """
+  readCSV: will read a SMHI CSV file as specified by "name".
+    name : File path to the SMHI CSV file.
+    max_len : The maximum number of rows to read.
+    is_multi : Will read two SMHI data columns if 'True' (used for reading both wind direction and wind speed).
+  """
   result = []
   try:
     with open(name) as file:
@@ -47,6 +65,12 @@ def readCSV(name, wid = 3, max_len = 500000, is_multi = False):
   return result
 
 def writeCSV(name, rows, columns):
+  """
+  writeCSV: will write a set of rows and column headers
+    name : file path to output file.
+    rows : the data rows with at least len(columns) + 2 columns.
+    columns : a list of column header names.
+  """
   with open(name, mode = 'w') as file:
     writer = csv.writer(file, delimiter = ';', quotechar='"', quoting = csv.QUOTE_MINIMAL)
     header_row = ["Datum", "Tid (UTC)"]
@@ -57,20 +81,29 @@ def writeCSV(name, rows, columns):
       writer.writerow(row)
 
 def getRowTimestamp(row):
+  """
+  getRowTimestamp: Will return the concatenated version of the time columns.
+    row : A data row with the two first columns being date and time.
+  """
   return datetime.strptime(row[0] + " " + row[1], TIMESTAMP_FORMAT_STRING)
 
 def mergeCSV(results):
+  """
+  mergeCSV : Will merge multiple datasets loaded using 'readCSV' into an combined dataset with aligned timestamps.
+    results : array of results as loaded with 'readCSV'.
+  """
   # This expectes the values to be sorted in occurance (by data and time) and that the
   # first two columns to hold those two values.
   output = []
   indices = []
-  print("Seeking to start timestamp...")
+  num_sets = len(results)
+  print("Seeking to start timestamp in %d datasets..." % num_sets)
   columns_width = 2
   for set in results:
     i = 0
     l = len(set)
     columns_width = columns_width + len(set[0]) - 2
-    # TODO: Optimize using binary search.
+    # This search could be speed up using binary search.
     while i < l:
       row = set[i]
       timestamp = getRowTimestamp(row)
@@ -83,7 +116,7 @@ def mergeCSV(results):
   row_date = ""
   row_time = ""
   iteration = 0
-  print("Merging data rows...")
+  print("Merging data rows from %d datasets..." % num_sets)
   while(True):
     iteration = iteration + 1
     if iteration > 50000:
@@ -94,6 +127,7 @@ def mergeCSV(results):
         index = indices[i]
         parsed = parsed + index
         total = total + len(results[i])
+      # Print the current 
       print("Progress: %f%% done." % ((float(parsed) / float(total)) * 100.0) )
     old_timestamp = future_timestamp
     has_more = False
@@ -134,10 +168,17 @@ def mergeCSV(results):
       output.append(new_row)
     else:
       break # No more data available.
-  print("END!")
   return output
 
 def parseCities(city_names, folders, columns, max_len, multi):
+  """
+  parseCities : Parses multiple related SHMI CSV datasets and merges them into a single output.
+    city_names : string list of the names of the targeted cities.
+    folders : string list of the possible folders to find datasets in.
+    columns : string list of the weather metrics to load for each city in 'city_names'.
+    max_len : the maximum number of rows to load.
+    multi : if 'True' then multiple data columns will be loaded (used for loading both wind direction and wind speed).
+  """
   results = []
   for name in city_names:
     for column in columns:
@@ -159,6 +200,10 @@ def parseCities(city_names, folders, columns, max_len, multi):
   return mergeCSV(results)
 
 def parseArguments(args):
+  """
+  parseArguments : argument parser for merging SMHI CSV datasets into a single aligned dataset.
+    args : the program arguments to parse.
+  """
   global MIN_TIME
   global MAX_TIME
   input_city = []
@@ -212,4 +257,5 @@ def parseArguments(args):
   else:
     print("Missing columns.")
 
+# Just take the environment params and put into the argument parser.
 parseArguments(sys.argv[1:])

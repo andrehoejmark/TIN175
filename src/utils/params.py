@@ -1,3 +1,8 @@
+
+#
+# Author: Felix Hulthén.
+#
+
 class NetowrkHyperparameterConfig:
     def __init__(self):
         self.read_sequence_length = 24 * 7 * 3  # How much data to read from the dataset.
@@ -23,6 +28,9 @@ class NetowrkHyperparameterConfig:
         self.keep_city_as_input = False
 
     def getConfigString(self):
+        """
+        getConfigString : returns a string of the current configuration.
+        """
         return ("""
 # Current config
 Read sequence length = %d
@@ -57,6 +65,10 @@ Use city as input : %s
 
 
 def convConfigToHyperparams(conf):
+    """
+    convConfigToHyperparams : converts a 'Config' object into a 'NetowrkHyperparameterConfig' object.
+      conf : the 'Config' object (see 'loadCSV.py')
+    """
     hyperparams = NetowrkHyperparameterConfig()
     hyperparams.time_shift_in_hours = conf.time_shift
     hyperparams.training_splitting = conf.training_split

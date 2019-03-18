@@ -1,3 +1,8 @@
+
+#
+# Author: Rasmus Claesen.
+#
+
 from tensorflow.python.keras.models import Sequential
 from tensorflow.python.keras.layers import Dense, GRU, LSTM, TimeDistributed
 from tensorflow.python.keras.optimizers import RMSprop

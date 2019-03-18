@@ -1,3 +1,12 @@
+
+#
+# Author: Felix Hulthén.
+#
+
+"""
+A container script for holding the 'SimulationData' class.
+"""
+
 import sys
 
 from src.utils.loadCSV import separateCSV, deleteCSVColumn
@@ -12,8 +21,10 @@ import keras
 
 from src.utils.model import loadModel
 
-
 class SimulationData:
+    """
+    A class for holding a Keras RNN, and accessing its data fields.
+    """
     def __init__(self, hyperparams, headers, data=None):
         hyperparams.getConfigString()
         START_COLUMN_IDX = 6
@@ -54,6 +65,10 @@ class SimulationData:
         self.model = None
 
     def splitAndNormalize(self):
+        """
+        splitAndNormalize : Will split the held datasets and normalize the input and
+                            output in order to comply with the used activation function.
+        """
         self.num_train=int(len(self.in_values)*self.training_split)
         val_len = 720
         self.in_train=self.in_values[0:self.num_train]
@@ -76,12 +91,19 @@ class SimulationData:
 
 
     def createValidationData(self):
+        """
+        createValidationData : Create a validation data object.
+        """
         self.validation_data=(
             numpy.expand_dims(self.in_test_scaled, axis=0),
             numpy.expand_dims(self.out_test_scaled, axis=0))
 
 
     def getBatchGenerator(self, hyperparams):
+        """
+        getBatchGenerator : Creates a batch generator for use during later training.
+          hyperprarams : The hyperparams object that dictates how the RNN is costructed.
+        """
         batch_size=hyperparams.read_batch_size
         sequence_length=336  #  hyperparams.read_sequence_length
         while True:
@@ -99,6 +121,9 @@ class SimulationData:
 
 
     def lossMSEWarmup(self, out_true, out_pred):
+        """
+        lossMSEWarmup : Calculates the mean square error over the trained network.
+        """
         #  "Calculate the Mean Squared Error"
         out_true_slice=out_true[:, self.warmup_steps:, :]
         out_pred_slice=out_pred[:, self.warmup_steps:, :]
@@ -107,6 +132,10 @@ class SimulationData:
         return self.loss_mean
 
     def setupAndPerformSimulation(self, hyperparams):
+        """
+        setupAndPerformSimulation : Will setup the network according to the provided hyperparams object.
+          hyperprarams : The hyperparams object that dictates how the RNN is costructed.
+        """
         if hyperparams.network_type == "tutorial_model":
           self.model = loadModel(hyperparams=hyperparams, model_name="tutorial_model", in_shape=self.num_in_signals, out_shape=self.num_out_signals)
         else:
@@ -147,6 +176,11 @@ class SimulationData:
         self.callbacks = [callback_early_stopping, callback_checkpoint, callback_tensorboard, callback_reduce_lr]
 
     def performSimulation(self, hyperparams):
+        """
+        performSimulation : requires that the other setup methods have
+                            been called, and then performs a simulation
+                            according to the hyperparameters object.
+        """
         generator = self.getBatchGenerator(hyperparams)
         in_batch, out_batch = next(generator)
         self.model.summary()

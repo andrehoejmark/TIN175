@@ -1,9 +1,21 @@
 
+#
+# Author: Felix Hulthén.
+#
+
+"""
+Loading script for opening CSV files for automated network construction and testing.
+"""
+
 import math
 import csv
 import numpy
 
 class Config:
+  """
+  Container class for data loaded from CSV files containing parameters for
+  automated recurrent neural network training.
+  """
   def __init__(self, row):
     self.time_shift = int(row[0])
     self.training_split = float(row[1])
@@ -23,6 +35,10 @@ class Config:
     self.read_batch_size = int(row[15])
     self.outputs = int(row[16])
 class ConfigCSV:
+  """
+  Container class for holding a set of 'Config' objects for automated testing,
+  e.g. a class for running multiple automated test sessions.
+  """
   def __init__(self, csv):
     self.rows = csv.data
   def getConfig(self, nid):
@@ -34,11 +50,22 @@ class ConfigCSV:
     return None
 
 class smhiCSV:
+  """
+  A container class for loaded merged SMHI CSV files. Contains row headers,
+  row data and modification functions.
+  """
   def __init__(self, use_full_timestamp=True):
     self.header = []
     self.data = []
     self.use_full_timestamp = use_full_timestamp
   def shiftDataColumns(self, steps):
+    """
+    shiftDataColumns : Will shift the data rows a set number of steps, which
+                       will alter the number of available rows. This is used to
+                       simulate forecasting 'x steps' into the future in the simulation.
+      steps : The number of steps to shift. A row that has been shifted out of the
+              original length with be removed.
+    """
     copy = self.data[:]
     l = len(copy)
     broken_row = []
@@ -50,12 +77,25 @@ class smhiCSV:
       else:
         self.data[i] = copy[(i - steps) % l]
   def drop(self, steps):
+    """
+    drop : Will drop the first 'step' rows.
+    """
     if steps > 0:
       self.data = self.data[steps:]
   def pop(self, steps):
+    """
+    pop : Will pop the last 'step' rows.
+    """
     if steps > 0:
       self.data = self.data[:-steps]
   def valuesWithDate(self):
+    """
+    valuesWithDate : Expands and separates the date and time fields
+                     into their respective columns, depending on the
+                     state of 'use_full_timestamp'. If 'use_full_timestamp'
+                     is set to False, then the year, minutes and seconds
+                     fields are removed. Otherwise all fields are used.
+    """
     copy = []
     for row in self.data:
       date = row[0].split("-")
@@ -70,6 +110,9 @@ class smhiCSV:
           [int(time[0])] + row[2:])
     return numpy.array(copy)
   def valuesWithoutDate(self):
+    """
+    valuesWithoutDate : 
+    """
     copy = []
     for row in self.data:
       copy.append(row[2:])
@@ -78,12 +121,21 @@ class smhiCSV:
     return numpy.array(self.data)
 
 def toCellNum(n):
+  """
+  toCellNum : attempts to convert 'n' into a floating point number. Otherwise
+              returns the original value of 'n'.
+  """
   if n is "-":
     return n
   else:
     return float(n)
 
 def loadCSV(name, convert = True):
+  """
+  loadCSV : Loads a raw SMHI CSV file.
+    convert : If set to 'True' all row values apart from the date and time columns
+              are converted into floating point numbers.
+  """
   try:
     result = smhiCSV()
     with open(name) as file:
@@ -104,6 +156,10 @@ def loadCSV(name, convert = True):
   return None
 
 def loadConfigCSV(name):
+  """
+  loadConfigCSV : Load a SMHI CSV config file.
+    name : file path to the config file.
+  """
   result = loadCSV(name, convert = False)
   if result:
     return ConfigCSV(result)
@@ -111,6 +167,10 @@ def loadConfigCSV(name):
     return None
 
 def loadInterpolatedCSV(name):
+  """
+  loadInterpolatedCSV : Load a SMHI CSV dataset file and interpolate missing values.
+    name : file path to the dataset.
+  """
   result = loadCSV(name)
   if result:
     return interpolateCSV(result)
@@ -118,6 +178,10 @@ def loadInterpolatedCSV(name):
     return None
 
 def interpolateCSV(smhi):
+  """
+  interpolateCSV : Applies linear interpolation to missing values.
+    smhi : The original SMHI object.
+  """
   data = smhi.data
   num_rows = len(data)
   for i in range(2, len(smhi.header)):
@@ -151,6 +215,12 @@ def interpolateCSV(smhi):
   return smhi
 
 def separateCSV(smhi, frm, wid):
+  """
+  separateCSV : Separates the columns in a SMHI object into two separate SMHI objects.
+    smhi : the original object.
+    frm : the start splice index
+    to : the end splice index
+  """
   to = frm + wid
   smhi_a = smhiCSV()
   smhi_b = smhiCSV()
@@ -170,8 +240,6 @@ def separateCSV(smhi, frm, wid):
   return (smhi_a, smhi_b)
 
 def deleteCSVColumn(smhi, idx):
-  print("DEL %d LEN %d" % (idx, len(smhi.header)))
   smhi.header.pop(idx)
   for row in smhi.data:
-    print(len(row))
     row.pop(idx)

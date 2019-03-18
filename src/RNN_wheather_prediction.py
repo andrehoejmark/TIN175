@@ -1,5 +1,13 @@
-# Hello. This just my testing file for learning Keras. You can try using it if
-# you want to, however, you will have to merge the dataset yourself.
+
+#
+# Author : Felix Hulthén.
+#
+
+"""
+A small (and crude) command interpreter for performing SMHI dataset loading,
+automated testing and visualisation graph generation. You can type the command
+'help' if you want instructions on how to use the command interpreter.
+"""
 
 import sys
 import os
@@ -11,10 +19,16 @@ import numpy
 
 # Global parameters.
 
-DATASET_CSV_FILE = "./utils/wheather-data-1998-2018.csv"
-CONFIG_LOCATION = "hyperparameters.csv"
+DATASET_CSV_FILE = "src/utils/example_data.csv"
+CONFIG_LOCATION = "src/example_hyperparameters.csv"
 LOADED_CONFIG_FILE = None
 
+"""
+OUTPUT_TARGET_HEADERS : You specify (exactly) the names of the output signals
+  from the loaded SMHI CSV datasets that are supposed to be an output signal
+  (e.g. part of the forecast values in the future). You can specify multiple;
+  however, the order of them will depend on how they are listed in the CSV file.
+"""
 # OUTPUT_TARGET_HEADERS = ["gothenburg temperature", "gothenburg wind direction", "gothenburg wind speed", "gothenburg pressure"]
 OUTPUT_TARGET_HEADERS=["gothenburg temperature"]
 
@@ -127,7 +141,7 @@ def runConfigs():
 
 def printHelp(cmd="null"):
     print(
-        "Dunno what \"{cmd}\" is. You can use 'view_input_plots', 'save_input_plots', 'run_config' or 'simulate' at the "
+        "Dunno what \"{cmd}\" is. You can use 'view_input_plots', 'save_input_plots', 'run_config', 'agg' or 'simulate' at the "
         "moment.".format(cmd=cmd))
 
 

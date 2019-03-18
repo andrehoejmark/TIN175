@@ -168,11 +168,17 @@ def plot_training(y_label=None, train_loss=None, val_loss=None, title="", sid=No
 
 
 def plot_double_csv(length=100):
+    """
+    Overall a bit fuzzy function to create some specific plots for the essay.
+    Compare two predictions on a shared X-axis from saved log files.
+    :param length: No. of hours for desired range the of X-axis.
+    :return:
+    """
 
-    true_24=np.genfromtxt("out_pred_lstm.csv", delimiter=",")
-    pred_24=np.genfromtxt("out_true_lstm.csv", delimiter=",")
-    true_72=np.genfromtxt("out_pred_gru.csv", delimiter=",")
-    pred_72=np.genfromtxt("out_true_gru.csv", delimiter=",")
+    out_pred_lstm=np.genfromtxt("out_pred_lstm.csv", delimiter=",")
+    out_true_lstm=np.genfromtxt("out_true_lstm.csv", delimiter=",")
+    out_pred_gru=np.genfromtxt("out_pred_gru.csv", delimiter=",")
+    out_true_gru=np.genfromtxt("out_true_gru.csv", delimiter=",")
 
     matplotlib.rc('font', size=20)
     #matplotlib.rc('axes', titlesize=18)
@@ -184,8 +190,8 @@ def plot_double_csv(length=100):
     #ax[0].plot(pred_24[100:length], label="predicted")
     #ax[0].legend()
 
-    plt.plot(true_24[100:length], label="true")
-    plt.plot(pred_24[100:length], label="predicted")
+    plt.plot(out_true_lstm[100:length], label="true")
+    plt.plot(out_pred_lstm[100:length], label="predicted")
     plt.legend()
     #ax[1].plot(true_72[100:length])
     #ax[1].plot(pred_72[100:length])
@@ -201,6 +207,11 @@ def plot_double_csv(length=100):
 
 def train_comparison(y_label=None, train_loss_a=None, val_loss_a=None, train_loss_b=None, val_loss_b=None,
                      title=None):
+    """
+    Compares training from to given networks.
+    Like previous function the ambition was dynamic but using hardcoded values to create plots for the essay.
+    See ~plot_training. 
+    """
 
     matplotlib.rc('font', size=14)
     plt.figure(figsize=(15, 5))

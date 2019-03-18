@@ -53,6 +53,11 @@ def add_training_plots(no_of_simulations=0, log=False):
 
 
 def multi_training_plot(plot_id_a=None, plot_id_b=None):
+    """
+    Given two SIDs, grabs the training performance from the two and plots on a shared X-axis
+    :param plot_id_a: Simulation ID for plot A
+    :param plot_id_b: Simulation ID for plot B
+    """
     file_path_a = path_base_dir + str(plot_id_a) + path_ending_dir
     file_path_b = path_base_dir + str(plot_id_b) + path_ending_dir
     file_name_a = os.listdir(file_path_a)[0]
@@ -66,6 +71,12 @@ def multi_training_plot(plot_id_a=None, plot_id_b=None):
 
 
 def extract_scores(no_of_simulations):
+    """
+    Extracts the top scores of all SIDs currently in simulation folder and saves them
+    both sorted by SID and by top-score. A manual comparison is then needed to determine top performer.
+    :param no_of_simulations:
+    :return:
+    """
     data = []
     for sid in range(no_of_simulations):
         file_path = path_base_dir + str(sid) + path_ending_dir
@@ -76,8 +87,8 @@ def extract_scores(no_of_simulations):
 
 ##########################################
 
-
-#multi_training_plot(3, 2)
-#extract_scores(6)
-#add_training_plots(6, log=True)
+# Commonly used operations. Usually only one of them is desired and the rest would be commented.
+multi_training_plot(3, 2)
+extract_scores(6)
+add_training_plots(6, log=True)
 plot_double_csv(length=772)

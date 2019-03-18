@@ -4,7 +4,7 @@
 #
 
 from tensorflow.python.keras.models import Sequential
-from tensorflow.python.keras.layers import Dense, GRU, LSTM, TimeDistributed
+from tensorflow.python.keras.layers import Dense, GRU, LSTM, TimeDistributed, CuDNNLSTM
 from tensorflow.python.keras.optimizers import RMSprop
 
 
@@ -29,6 +29,10 @@ def tutorial_model(hyperparams=None, in_shape=None, out_shape=None):
 
     elif hyperparams.network_type == 'GRU':
         model = add_GRU(model=model, units=hyperparams.num_gated_reoccurring_units, input_shape=(None, in_shape))
+
+    elif hyperparams.network_type == 'CuDNNLSTM':
+        model = add_GRU(model=model, units=hyperparams.num_gated_reoccurring_units, input_shape=(None, in_shape))
+
 
     model.add(Dense(out_shape, activation=hyperparams.activation_function))
     optimizer = RMSprop(lr=hyperparams.start_learning_rate)
@@ -96,6 +100,12 @@ def add_LSTM(model=None, units=None, input_shape=None):
 def add_GRU(model=None, units=None, input_shape=None):
     model.add(
         GRU(units=units,
+            return_sequences=True, input_shape=input_shape))
+    return model if not None else None
+
+def add_CuDNNLSTM(model=None, units=None, input_shape=None):
+    model.add(
+        CuDNNLSTM(units=units,
             return_sequences=True, input_shape=input_shape))
     return model if not None else None
 

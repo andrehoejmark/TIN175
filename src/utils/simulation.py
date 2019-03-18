@@ -11,7 +11,7 @@ import sys
 
 from src.utils.loadCSV import separateCSV, deleteCSVColumn
 from tensorflow.python.keras.models import Sequential
-from tensorflow.python.keras.layers import Dense, GRU, LSTM
+from tensorflow.python.keras.layers import Dense, GRU, LSTM, CuDNNLSTM
 from tensorflow.python.keras.optimizers import RMSprop
 from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard, ReduceLROnPlateau
 from sklearn.preprocessing import MinMaxScaler
@@ -148,6 +148,10 @@ class SimulationData:
               # self.model.add(LSTM(hyperparams.num_gated_reoccurring_units, return_sequences = True))
               self.model.add(
                   LSTM(units=hyperparams.num_gated_reoccurring_units,
+                    return_sequences=True, input_shape=(None, self.num_in_signals,)))
+          elif hyperparams.network_type == "CuDNNLSTM":
+              self.model.add(
+                  CuDNNLSTM(units=hyperparams.num_gated_reoccurring_units,
                     return_sequences=True, input_shape=(None, self.num_in_signals,)))
           else:
               print("Don't know what the network type '%s' is." % hyperparams.network_type)

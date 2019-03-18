@@ -1,14 +1,14 @@
 # TIN175
 Predicting temperature of city with weather data from nearby cities
 
-<br><br><br><br><br><br><br><br><br>
+<br><br>
 
 In order to start the basic command line script you will need Python3, Keras,
 Tensorflow + some other libraries installed. Then you run "start.py" and follow
 the on-screen instructions.
 
 
-<br><br><br><br><br><br>
+<br><br>
 
 
 <table class="tg">
@@ -19,7 +19,7 @@ the on-screen instructions.
     <td class="tg-0lax">Rasmus Claesen</td>
   </tr>
   <tr>
-    <td class="tg-0lax">Felix</td>
+    <td class="tg-0lax">Felix Hulthén</td>
   </tr>
   <tr>
     <td class="tg-0lax">Edin</td>
